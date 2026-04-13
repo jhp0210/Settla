@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function HeroSection() {
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#0a0a0f] px-4 py-24 text-center">
@@ -43,9 +45,12 @@ export function HeroSection() {
 
         {/* CTA Buttons */}
         <div className="mb-16 flex flex-wrap items-center justify-center gap-4">
-          <button className="rounded-lg bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-95">
+          <Link
+            href="/login"
+            className="rounded-lg bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-95"
+          >
             무료로 시작하기
-          </button>
+          </Link>
           <button className="rounded-lg border border-white/10 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white/80 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95">
             데모 보기
           </button>
