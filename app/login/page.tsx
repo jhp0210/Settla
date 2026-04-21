@@ -22,16 +22,16 @@ export default function LoginPage() {
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400" />
             AI Housing
           </div>
-          <h1 className="mt-4 text-3xl font-bold text-white">시작하기</h1>
+          <h1 className="mt-4 text-3xl font-bold text-white">Get started</h1>
           <p className="mt-2 text-sm text-white/50">
-            Google 계정으로 간편하게 로그인하세요
+            Sign in with your Google account to continue
           </p>
         </div>
 
         {/* Error message */}
         {error && (
           <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-            로그인 중 오류가 발생했습니다. 다시 시도해 주세요.
+            An error occurred during sign-in. Please try again.
           </div>
         )}
 
@@ -43,7 +43,7 @@ export default function LoginPage() {
             className="flex w-full items-center justify-center gap-3 rounded-lg border border-white/10 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <GoogleIcon />
-            Google로 로그인
+            Continue with Google
           </button>
         </div>
       </div>
