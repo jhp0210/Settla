@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { PlanProvider } from "@/context/PlanContext";
+import { ChatWidget } from "@/app/components/ChatWidget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,6 +34,7 @@ export default function RootLayout({
           <AuthProvider>
             <PlanProvider>{children}</PlanProvider>
           </AuthProvider>
+          <ChatWidget />
         </body>
     </html>
   );
