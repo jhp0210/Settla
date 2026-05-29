@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { usePlan, FREE_SEARCH_LIMIT } from "@/context/PlanContext";
 import { useRouter } from "next/navigation";
 import { HouseComparison } from "@/app/components/HouseComparison";
+import { PropertyAnalysis, type AnalysisData } from "@/app/components/PropertyAnalysis";
 
 export default function DashboardPage() {
   const { user, signOut } = useAuth();
@@ -13,15 +14,30 @@ export default function DashboardPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (!searchQuery.trim() || !canSearch) return;
     setIsSearching(true);
+    setAnalysis(null);
+    setAnalysisError(null);
     await incrementSearch();
-    // TODO: wire up real address search logic
-    await new Promise((r) => setTimeout(r, 800));
-    setIsSearching(false);
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address: searchQuery }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Analysis failed");
+      setAnalysis(data);
+    } catch (err) {
+      setAnalysisError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsSearching(false);
+    }
   }
 
   async function handleSignOut() {
@@ -159,6 +175,23 @@ export default function DashboardPage() {
             </div>
           )}
         </form>
+
+        {/* AI Analysis result */}
+        {isSearching && (
+          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-sm text-white/50">
+            <svg className="h-4 w-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Analyzing property — this takes a few seconds…
+          </div>
+        )}
+        {analysisError && (
+          <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/5 px-6 py-4 text-sm text-red-400">
+            {analysisError}
+          </div>
+        )}
+        {analysis && <PropertyAnalysis data={analysis} />}
 
         {/* House Comparison */}
         <HouseComparison />
