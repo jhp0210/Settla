@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function HeroSection() {
   return (
@@ -188,6 +189,7 @@ export function HeroSection() {
                 match: 94,
                 tag: "Hot market",
                 tagColor: "bg-red-50 text-red-600",
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=350&fit=crop&auto=format&q=80",
               },
               {
                 label: "New York — Upper West Side",
@@ -199,6 +201,7 @@ export function HeroSection() {
                 match: 87,
                 tag: "Highly sought",
                 tagColor: "bg-amber-50 text-amber-700",
+                image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=350&fit=crop&auto=format&q=80",
               },
               {
                 label: "Bay Area — Palo Alto",
@@ -210,17 +213,21 @@ export function HeroSection() {
                 match: 91,
                 tag: "Top schools",
                 tagColor: "bg-green-50 text-green-700",
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=350&fit=crop&auto=format&q=80",
               },
             ].map((p) => (
               <div key={p.label} className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-                {/* Property image placeholder */}
-                <div className="relative flex h-44 items-end bg-gradient-to-br from-green-100 via-emerald-50 to-teal-100">
-                  <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                    <svg className="h-24 w-24 text-green-800" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                  </div>
-                  <div className="relative z-10 m-3 flex items-center justify-between w-full px-1">
+                {/* Property image */}
+                <div className="relative h-44 overflow-hidden">
+                  <Image
+                    src={p.image}
+                    alt={p.label}
+                    fill
+                    className="object-cover transition-transform duration-300 hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute bottom-0 left-0 right-0 m-3 flex items-center justify-between px-1">
                     <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${p.tagColor}`}>
                       {p.tag}
                     </span>
