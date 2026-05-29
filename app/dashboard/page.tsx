@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { usePlan, FREE_SEARCH_LIMIT } from "@/context/PlanContext";
 import { useRouter } from "next/navigation";
@@ -17,9 +17,8 @@ export default function DashboardPage() {
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (!searchQuery.trim() || !canSearch) return;
+  const runSearch = useCallback(async (address: string) => {
+    if (!address.trim() || !canSearch) return;
     setIsSearching(true);
     setAnalysis(null);
     setAnalysisError(null);
@@ -28,7 +27,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address: searchQuery }),
+        body: JSON.stringify({ address }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Analysis failed");
@@ -38,6 +37,20 @@ export default function DashboardPage() {
     } finally {
       setIsSearching(false);
     }
+  }, [canSearch, incrementSearch]);
+
+  useEffect(() => {
+    const pending = sessionStorage.getItem("pending_search");
+    if (pending) {
+      sessionStorage.removeItem("pending_search");
+      setSearchQuery(pending);
+      runSearch(pending);
+    }
+  }, [runSearch]);
+
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    runSearch(searchQuery);
   }
 
   async function handleSignOut() {
