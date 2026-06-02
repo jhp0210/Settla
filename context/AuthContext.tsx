@@ -15,6 +15,8 @@ type AuthContextType = {
   session: Session | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<string | null>;
+  signUpWithEmail: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signOut: () => Promise<void>;
 };
 
@@ -56,6 +58,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const signInWithEmail = useCallback(async (email: string, password: string): Promise<string | null> => {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return error?.message ?? null;
+  }, []);
+
+  const signUpWithEmail = useCallback(async (email: string, password: string): Promise<{ error: string | null; needsConfirmation: boolean }> => {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) return { error: error.message, needsConfirmation: false };
+    return { error: null, needsConfirmation: !data.session };
+  }, []);
+
   const signOut = useCallback(async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -63,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, signInWithGoogle, signOut }}
+      value={{ user, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut }}
     >
       {children}
     </AuthContext.Provider>
