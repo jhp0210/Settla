@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { HeroSearch } from "./HeroSearch";
+import { PropertyListings } from "./PropertyListings";
 
 export function HeroSection() {
   return (
@@ -61,6 +62,13 @@ export function HeroSection() {
           <p className="text-xs text-gray-400">
             Trusted by over 50,000 home buyers and sellers nationwide
           </p>
+        </div>
+      </section>
+
+      {/* Browse Listings */}
+      <section className="border-t border-gray-200 bg-white px-4 py-12">
+        <div className="mx-auto max-w-5xl">
+          <PropertyListings theme="light" />
         </div>
       </section>
 
