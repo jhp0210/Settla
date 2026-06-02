@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { HeroSearch } from "./HeroSearch";
 import { PropertyListings } from "./PropertyListings";
 
 export function HeroSection() {
@@ -39,7 +38,7 @@ export function HeroSection() {
 
       {/* Hero */}
       <section className="px-4 pb-16 pt-20">
-        <div className="mx-auto max-w-4xl text-center">
+        <div className="mx-auto mb-10 max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-1.5 text-sm font-medium text-green-700">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
             AI-Powered Real Estate Analysis
@@ -51,22 +50,12 @@ export function HeroSection() {
             <span className="text-[#166534]">with AI market insights</span>
           </h1>
 
-          <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-gray-500">
+          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-gray-500">
             Our AI analyzes real estate trends, neighborhood data, and market conditions
             to help you make smarter homebuying decisions.
           </p>
-
-          {/* Search bar */}
-          <HeroSearch />
-
-          <p className="text-xs text-gray-400">
-            Trusted by over 50,000 home buyers and sellers nationwide
-          </p>
         </div>
-      </section>
 
-      {/* Browse Listings */}
-      <section className="border-t border-gray-200 bg-white px-4 py-12">
         <div className="mx-auto max-w-5xl">
           <PropertyListings theme="light" />
         </div>
