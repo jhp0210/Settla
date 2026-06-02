@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { PlanProvider } from "@/context/PlanContext";
+import { SavedPropertiesProvider } from "@/context/SavedPropertiesContext";
 import { ChatWidget } from "@/app/components/ChatWidget";
 import "./globals.css";
 
@@ -32,7 +33,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
           <AuthProvider>
-            <PlanProvider>{children}</PlanProvider>
+            <PlanProvider>
+              <SavedPropertiesProvider>{children}</SavedPropertiesProvider>
+            </PlanProvider>
           </AuthProvider>
           <ChatWidget />
         </body>

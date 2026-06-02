@@ -1,0 +1,66 @@
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  const { location } = await req.json();
+  if (!location?.trim()) {
+    return NextResponse.json({ error: "Location is required" }, { status: 400 });
+  }
+
+  const isZip = /^\d{5}$/.test(location.trim());
+  const body: Record<string, unknown> = {
+    limit: 20,
+    offset: 0,
+    status: ["for_sale"],
+    sort: { direction: "desc", field: "list_date" },
+  };
+
+  if (isZip) {
+    body.postal_code = location.trim();
+  } else {
+    const parts = location.split(",").map((p: string) => p.trim());
+    body.city = parts[0];
+    if (parts[1]) body.state_code = parts[1].toUpperCase().slice(0, 2);
+  }
+
+  const res = await fetch("https://realty-in-us.p.rapidapi.com/properties/v3/list", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-RapidAPI-Key": process.env.RAPIDAPI_KEY!,
+      "X-RapidAPI-Host": "realty-in-us.p.rapidapi.com",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("RapidAPI error:", res.status, text);
+    return NextResponse.json({ error: "Failed to fetch listings" }, { status: 502 });
+  }
+
+  const data = await res.json();
+  const results: Record<string, unknown>[] = data?.data?.home_search?.results ?? [];
+
+  const properties = results.map((p) => {
+    const loc = p.location as Record<string, unknown> | undefined;
+    const addr = (loc?.address as Record<string, unknown> | undefined) ?? {};
+    const desc = (p.description as Record<string, unknown> | undefined) ?? {};
+    const photo = p.primary_photo as Record<string, unknown> | undefined;
+    return {
+      property_id: p.property_id as string,
+      address: (addr.line as string) ?? "",
+      city: (addr.city as string) ?? "",
+      state_code: (addr.state_code as string) ?? "",
+      postal_code: (addr.postal_code as string) ?? "",
+      price: (p.list_price as number) ?? null,
+      beds: (desc.beds as number) ?? null,
+      baths: (desc.baths_consolidated as string) ?? null,
+      sqft: (desc.sqft as number) ?? null,
+      year_built: (desc.year_built as number) ?? null,
+      photo_url: (photo?.href as string) ?? null,
+      property_type: (desc.type as string) ?? null,
+    };
+  });
+
+  return NextResponse.json({ properties });
+}

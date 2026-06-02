@@ -7,6 +7,7 @@ import { usePlan, FREE_SEARCH_LIMIT } from "@/context/PlanContext";
 import { useRouter } from "next/navigation";
 import { HouseComparison } from "@/app/components/HouseComparison";
 import { PropertyAnalysis, type AnalysisData } from "@/app/components/PropertyAnalysis";
+import { PropertyListings } from "@/app/components/PropertyListings";
 
 export default function DashboardPage() {
   const { user, signOut } = useAuth();
@@ -205,6 +206,9 @@ export default function DashboardPage() {
           </div>
         )}
         {analysis && <PropertyAnalysis data={analysis} />}
+
+        {/* Browse & Save Listings */}
+        <PropertyListings />
 
         {/* House Comparison */}
         <HouseComparison />
