@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { usePlan, FREE_COMPARE_LIMIT } from "@/context/PlanContext";
 import { useSavedProperties, type SavedProperty } from "@/context/SavedPropertiesContext";
 
@@ -22,6 +22,39 @@ function formatField(key: keyof SavedProperty, value: unknown): string {
   if (key === "price") return "$" + Number(value).toLocaleString();
   if (key === "sqft") return Number(value).toLocaleString();
   return String(value);
+}
+
+function Notepad({ property }: { property: SavedProperty }) {
+  const { updateNote } = useSavedProperties();
+  const [draft, setDraft] = useState(property.notes ?? "");
+  const [saving, setSaving] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function handleChange(val: string) {
+    setDraft(val);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(async () => {
+      setSaving(true);
+      await updateNote(property.property_id, val);
+      setSaving(false);
+    }, 800);
+  }
+
+  return (
+    <div className="border-t border-white/5 px-5 py-3">
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-xs text-white/40">My notes</span>
+        {saving && <span className="text-xs text-white/20">Saving…</span>}
+      </div>
+      <textarea
+        value={draft}
+        onChange={(e) => handleChange(e.target.value)}
+        placeholder="Jot down what you noticed when you visited…"
+        rows={3}
+        className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70 placeholder-white/20 outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/40"
+      />
+    </div>
+  );
 }
 
 export function HouseComparison() {
@@ -127,6 +160,7 @@ export function HouseComparison() {
                       </div>
                     ))}
                   </div>
+                  <Notepad property={house} />
                 </div>
               ) : (
                 <div

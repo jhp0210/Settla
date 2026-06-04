@@ -120,6 +120,11 @@ interface PropertyListingsProps {
 
 export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
   const [location, setLocation] = useState("");
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
+  const [bedsMin, setBedsMin] = useState("");
+  const [bathsMin, setBathsMin] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [properties, setProperties] = useState<ListingProperty[]>([]);
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -139,7 +144,13 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
       const res = await fetch("/api/properties", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ location: location.trim() }),
+        body: JSON.stringify({
+          location: location.trim(),
+          priceMin: priceMin || undefined,
+          priceMax: priceMax || undefined,
+          bedsMin: bedsMin || undefined,
+          bathsMin: bathsMin || undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Search failed");
@@ -150,6 +161,14 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
       setSearching(false);
     }
   }
+
+  const inputCls = isDark
+    ? "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50"
+    : "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-[#166534] focus:ring-1 focus:ring-[#166534]";
+
+  const selectCls = isDark
+    ? "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 appearance-none cursor-pointer"
+    : "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none focus:border-[#166534] focus:ring-1 focus:ring-[#166534] appearance-none cursor-pointer";
 
   return (
     <section className={isDark ? "mt-10" : ""}>
@@ -163,49 +182,116 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
       </div>
 
       {/* Search */}
-      <form onSubmit={handleSearch} className="flex gap-3">
-        <div className="relative flex-1">
-          <svg
-            className={`pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 ${isDark ? "text-white/30" : "text-gray-400"}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-          </svg>
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="ZIP code or City, State (e.g. 98122 or Seattle, WA)"
-            className={`w-full rounded-xl border py-3 pl-11 pr-4 text-sm outline-none transition ${
+      <form onSubmit={handleSearch} className="space-y-3">
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <svg
+              className={`pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 ${isDark ? "text-white/30" : "text-gray-400"}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+            </svg>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="ZIP code or City, State (e.g. 98122 or Seattle, WA)"
+              className={`w-full rounded-xl border py-3 pl-11 pr-4 text-sm outline-none transition ${
+                isDark
+                  ? "border-white/10 bg-white/5 text-white placeholder-white/30 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50"
+                  : "border-gray-200 bg-white text-gray-800 placeholder-gray-400 shadow-sm focus:border-[#166534] focus:ring-1 focus:ring-[#166534]"
+              }`}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowFilters((v) => !v)}
+            className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-4 py-3 text-sm font-medium transition active:scale-95 ${
               isDark
-                ? "border-white/10 bg-white/5 text-white placeholder-white/30 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50"
-                : "border-gray-200 bg-white text-gray-800 placeholder-gray-400 shadow-sm focus:border-[#166534] focus:ring-1 focus:ring-[#166534]"
+                ? showFilters
+                  ? "border-indigo-500/50 bg-indigo-500/10 text-indigo-300"
+                  : "border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:text-white"
+                : showFilters
+                  ? "border-[#166534]/50 bg-[#166534]/10 text-[#166534]"
+                  : "border-gray-200 bg-white text-gray-500 hover:text-gray-700"
             }`}
-          />
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+            </svg>
+            Filters
+          </button>
+          <button
+            type="submit"
+            disabled={searching || !location.trim()}
+            className={`flex shrink-0 items-center gap-2 rounded-xl px-5 py-3 text-sm font-medium text-white transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${
+              isDark ? "bg-indigo-600 hover:bg-indigo-500" : "bg-[#166534] hover:bg-[#14532d]"
+            }`}
+          >
+            {searching ? (
+              <>
+                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Searching…
+              </>
+            ) : (
+              "Search"
+            )}
+          </button>
         </div>
-        <button
-          type="submit"
-          disabled={searching || !location.trim()}
-          className={`flex shrink-0 items-center gap-2 rounded-xl px-5 py-3 text-sm font-medium text-white transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${
-            isDark ? "bg-indigo-600 hover:bg-indigo-500" : "bg-[#166534] hover:bg-[#14532d]"
-          }`}
-        >
-          {searching ? (
-            <>
-              <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Searching…
-            </>
-          ) : (
-            "Search"
-          )}
-        </button>
+
+        {/* Filter panel */}
+        {showFilters && (
+          <div className={`grid grid-cols-2 gap-3 rounded-xl border p-4 sm:grid-cols-4 ${
+            isDark ? "border-white/10 bg-white/[0.03]" : "border-gray-200 bg-gray-50"
+          }`}>
+            <div>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min price</label>
+              <input
+                type="number"
+                value={priceMin}
+                onChange={(e) => setPriceMin(e.target.value)}
+                placeholder="e.g. 300000"
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Max price</label>
+              <input
+                type="number"
+                value={priceMax}
+                onChange={(e) => setPriceMax(e.target.value)}
+                placeholder="e.g. 800000"
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min beds</label>
+              <select value={bedsMin} onChange={(e) => setBedsMin(e.target.value)} className={selectCls}>
+                <option value="">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+              </select>
+            </div>
+            <div>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min baths</label>
+              <select value={bathsMin} onChange={(e) => setBathsMin(e.target.value)} className={selectCls}>
+                <option value="">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+              </select>
+            </div>
+          </div>
+        )}
       </form>
 
       {/* Error */}

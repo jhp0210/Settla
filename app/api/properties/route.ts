@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const { location } = await req.json();
+  const { location, priceMin, priceMax, bedsMin, bathsMin } = await req.json();
   if (!location?.trim()) {
     return NextResponse.json({ error: "Location is required" }, { status: 400 });
   }
@@ -21,6 +21,15 @@ export async function POST(req: NextRequest) {
     body.city = parts[0];
     if (parts[1]) body.state_code = parts[1].toUpperCase().slice(0, 2);
   }
+
+  if (priceMin || priceMax) {
+    body.list_price = {
+      ...(priceMin ? { min: Number(priceMin) } : {}),
+      ...(priceMax ? { max: Number(priceMax) } : {}),
+    };
+  }
+  if (bedsMin) body.beds = { min: Number(bedsMin) };
+  if (bathsMin) body.baths = { min: Number(bathsMin) };
 
   const res = await fetch("https://realty-in-us.p.rapidapi.com/properties/v3/list", {
     method: "POST",
@@ -62,5 +71,12 @@ export async function POST(req: NextRequest) {
     };
   });
 
-  return NextResponse.json({ properties });
+  const seen = new Set<string>();
+  const unique = properties.filter((p) => {
+    if (seen.has(p.property_id)) return false;
+    seen.add(p.property_id);
+    return true;
+  });
+
+  return NextResponse.json({ properties: unique });
 }

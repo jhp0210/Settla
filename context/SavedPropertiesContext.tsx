@@ -18,6 +18,7 @@ export interface SavedProperty {
   year_built: number | null;
   photo_url: string | null;
   property_type: string | null;
+  notes: string | null;
 }
 
 type SavedPropertiesContextType = {
@@ -25,6 +26,7 @@ type SavedPropertiesContextType = {
   isSaved: (property_id: string) => boolean;
   saveProperty: (p: Omit<SavedProperty, "id">) => Promise<void>;
   unsaveProperty: (property_id: string) => Promise<void>;
+  updateNote: (property_id: string, notes: string) => Promise<void>;
   loading: boolean;
 };
 
@@ -88,9 +90,25 @@ export function SavedPropertiesProvider({ children }: { children: React.ReactNod
     [user]
   );
 
+  const updateNote = useCallback(
+    async (property_id: string, notes: string) => {
+      if (!user) return;
+      const supabase = createClient();
+      await supabase
+        .from("saved_properties")
+        .update({ notes })
+        .eq("user_id", user.id)
+        .eq("property_id", property_id);
+      setSavedProperties((prev) =>
+        prev.map((p) => (p.property_id === property_id ? { ...p, notes } : p))
+      );
+    },
+    [user]
+  );
+
   return (
     <SavedPropertiesContext.Provider
-      value={{ savedProperties, isSaved, saveProperty, unsaveProperty, loading }}
+      value={{ savedProperties, isSaved, saveProperty, unsaveProperty, updateNote, loading }}
     >
       {children}
     </SavedPropertiesContext.Provider>
