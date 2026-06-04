@@ -48,7 +48,17 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
     if (saved) {
       await unsaveProperty(property.property_id);
     } else {
-      await saveProperty(property);
+      let enriched = { ...property };
+      try {
+        const res = await fetch(`/api/property-detail?property_id=${property.property_id}`);
+        if (res.ok) {
+          const detail = await res.json();
+          enriched = { ...enriched, year_built: detail.year_built, baths: detail.baths };
+        }
+      } catch {
+        // save with whatever data we have
+      }
+      await saveProperty(enriched);
     }
     setToggling(false);
   }

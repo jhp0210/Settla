@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       postal_code: (addr.postal_code as string) ?? "",
       price: (p.list_price as number) ?? null,
       beds: (desc.beds as number) ?? null,
-      baths: (desc.baths_consolidated as string) ?? null,
+      baths: (desc.baths_full_calc as number)?.toString() ?? null,
       sqft: (desc.sqft as number) ?? null,
       year_built: (desc.year_built as number) ?? null,
       photo_url: upgradePhotoUrl((photo?.href as string) ?? null),
