@@ -19,9 +19,6 @@ export function HeroSection() {
             <Link href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               How it works
             </Link>
-            <Link href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Features
-            </Link>
             <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Pricing
             </Link>
@@ -94,55 +91,6 @@ export function HeroSection() {
                 <p className="text-sm leading-relaxed text-gray-500">{desc}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Feature highlights */}
-      <section id="features" className="px-4 py-20">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Your house hunt, simplified</h2>
-            <p className="mt-3 text-gray-500">Three steps to finding the home that actually fits</p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-700">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-base font-semibold text-gray-900">Search by what matters to you</h3>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Filter real listings by price range, number of bedrooms, and bathrooms — not just a ZIP code.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-700">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0z" />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-base font-semibold text-gray-900">Save the ones worth revisiting</h3>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Bookmark any listing as you browse. Your saved homes stay in one place, ready whenever you are.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-700">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15M3.75 9h16.5M3.75 15h16.5" />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-base font-semibold text-gray-900">Compare side by side</h3>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Put up to three saved homes next to each other — price, size, beds, baths — and see the differences at a glance.
-              </p>
-            </div>
           </div>
         </div>
       </section>
