@@ -41,18 +41,18 @@ export function HeroSection() {
         <div className="mx-auto mb-10 max-w-4xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-1.5 text-sm font-medium text-green-700">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
-            AI-Powered Real Estate Analysis
+            Real listings. Real comparisons.
           </div>
 
           <h1 className="mb-5 text-5xl font-bold leading-tight tracking-tight text-gray-900 md:text-6xl">
-            Find your perfect home
+            Stop second-guessing.
             <br />
-            <span className="text-[#166534]">with AI market insights</span>
+            <span className="text-[#166534]">Compare and decide.</span>
           </h1>
 
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-gray-500">
-            Our AI analyzes real estate trends, neighborhood data, and market conditions
-            to help you make smarter homebuying decisions.
+            Search homes by price, bedrooms, and size. Save the ones worth a second look,
+            then compare them side by side — so you can choose with confidence.
           </p>
         </div>
 
@@ -93,44 +93,45 @@ export function HeroSection() {
       <section id="features" className="px-4 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Built for the modern homebuyer</h2>
-            <p className="mt-3 text-gray-500">Everything you need to navigate today&apos;s housing market</p>
+            <h2 className="text-3xl font-bold text-gray-900">Your house hunt, simplified</h2>
+            <p className="mt-3 text-gray-500">Three steps to finding the home that actually fits</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-700">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
               </div>
-              <h3 className="mb-2 text-base font-semibold text-gray-900">Market Trend Analysis</h3>
+              <h3 className="mb-2 text-base font-semibold text-gray-900">Search by what matters to you</h3>
               <p className="text-sm leading-relaxed text-gray-500">
-                Track price trends, inventory levels, and market conditions in any neighborhood across the US.
+                Filter real listings by price range, number of bedrooms, and bathrooms — not just a ZIP code.
               </p>
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-700">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0z" />
                 </svg>
               </div>
-              <h3 className="mb-2 text-base font-semibold text-gray-900">AI Property Matching</h3>
+              <h3 className="mb-2 text-base font-semibold text-gray-900">Save the ones worth revisiting</h3>
               <p className="text-sm leading-relaxed text-gray-500">
-                Tell us your needs. Our AI instantly ranks thousands of listings by how well they match your criteria.
+                Bookmark any listing as you browse. Your saved homes stay in one place, ready whenever you are.
               </p>
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-700">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15M3.75 9h16.5M3.75 15h16.5" />
                 </svg>
               </div>
-              <h3 className="mb-2 text-base font-semibold text-gray-900">Side-by-Side Comparison</h3>
+              <h3 className="mb-2 text-base font-semibold text-gray-900">Compare side by side</h3>
               <p className="text-sm leading-relaxed text-gray-500">
-                Compare properties on price, size, location scores, school ratings, and AI match percentage.
+                Put up to three saved homes next to each other — price, size, beds, baths — and see the differences at a glance.
               </p>
             </div>
           </div>
@@ -229,15 +230,15 @@ export function HeroSection() {
       {/* CTA */}
       <section className="bg-[#166534] px-4 py-16 text-center">
         <div className="mx-auto max-w-2xl">
-          <h2 className="mb-4 text-3xl font-bold text-white">Ready to find your next home?</h2>
+          <h2 className="mb-4 text-3xl font-bold text-white">Stop losing track of homes you love.</h2>
           <p className="mb-8 text-green-200">
-            Join thousands of buyers who found their perfect match with AI Housing.
+            Search, save, and compare — all in one place. Free to start.
           </p>
           <Link
             href="/login"
             className="inline-block rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-[#166534] transition-all hover:bg-green-50 hover:shadow-lg active:scale-95"
           >
-            Get started for free
+            Start comparing homes
           </Link>
         </div>
       </section>
