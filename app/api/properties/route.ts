@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function upgradePhotoUrl(url: string | null): string | null {
+  if (!url) return null;
+  // rdcpix URLs end in a size letter before .jpg: s=small, m=medium, l=large
+  return url.replace(/s\.jpg$/, "l.jpg");
+}
+
 export async function POST(req: NextRequest) {
   const { location, priceMin, priceMax, bedsMin, bathsMin } = await req.json();
   if (!location?.trim()) {
@@ -66,7 +72,7 @@ export async function POST(req: NextRequest) {
       baths: (desc.baths_consolidated as string) ?? null,
       sqft: (desc.sqft as number) ?? null,
       year_built: (desc.year_built as number) ?? null,
-      photo_url: (photo?.href as string) ?? null,
+      photo_url: upgradePhotoUrl((photo?.href as string) ?? null),
       property_type: (desc.type as string) ?? null,
     };
   });
