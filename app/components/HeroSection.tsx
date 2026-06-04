@@ -16,11 +16,11 @@ export function HeroSection() {
           </div>
 
           <div className="hidden items-center gap-8 md:flex">
-            <Link href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Find Homes
+            <Link href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+              How it works
             </Link>
-            <Link href="#market" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Market Trends
+            <Link href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+              Features
             </Link>
             <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Pricing
@@ -61,30 +61,39 @@ export function HeroSection() {
         </div>
       </section>
 
-      {/* Market Stats */}
-      <section id="market" className="border-y border-gray-200 bg-white px-4 py-10">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">$485K</div>
-              <div className="mt-1 text-sm text-gray-500">Median Home Price</div>
-              <div className="mt-1 text-xs font-semibold text-green-600">▲ 3.2% this month</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">50,000+</div>
-              <div className="mt-1 text-sm text-gray-500">Active Listings</div>
-              <div className="mt-1 text-xs font-semibold text-amber-600">Updated daily</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">28 days</div>
-              <div className="mt-1 text-sm text-gray-500">Avg. Days on Market</div>
-              <div className="mt-1 text-xs font-semibold text-green-600">▼ 5 days YoY</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">98%</div>
-              <div className="mt-1 text-sm text-gray-500">AI Match Accuracy</div>
-              <div className="mt-1 text-xs font-semibold text-green-600">Verified results</div>
-            </div>
+      {/* How it works */}
+      <section id="how-it-works" className="border-y border-gray-200 bg-white px-4 py-10">
+        <div className="mx-auto max-w-3xl">
+          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-widest text-gray-400">How it works</p>
+          <div className="relative flex flex-col gap-8 sm:flex-row sm:gap-0">
+            {/* Connector line (desktop only) */}
+            <div className="absolute left-0 right-0 top-5 hidden h-px bg-gray-200 sm:block" style={{ left: "16.6%", right: "16.6%" }} />
+
+            {[
+              {
+                step: "1",
+                title: "Search with filters",
+                desc: "Enter a city or ZIP code, then narrow by price, bedrooms, and bathrooms to find listings that fit.",
+              },
+              {
+                step: "2",
+                title: "Save homes you like",
+                desc: "Bookmark any listing as you browse. Your saved homes stay in one place across sessions.",
+              },
+              {
+                step: "3",
+                title: "Compare side by side",
+                desc: "Pick up to three saved homes and see price, size, beds, and baths laid out together.",
+              },
+            ].map(({ step, title, desc }) => (
+              <div key={step} className="relative flex flex-1 flex-col items-center text-center">
+                <div className="relative z-10 mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#166534] text-sm font-bold text-white shadow-sm">
+                  {step}
+                </div>
+                <h3 className="mb-1.5 text-sm font-semibold text-gray-900">{title}</h3>
+                <p className="text-xs leading-relaxed text-gray-500">{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
