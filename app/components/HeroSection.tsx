@@ -64,7 +64,7 @@ export function HeroSection() {
       {/* How it works */}
       <section id="how-it-works" className="border-y border-gray-200 bg-white px-4 py-10">
         <div className="mx-auto max-w-3xl">
-          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-widest text-gray-400">How it works</p>
+          <p className="mb-8 text-center text-sm font-semibold uppercase tracking-widest text-gray-400">How it works</p>
           <div className="relative flex flex-col gap-8 sm:flex-row sm:gap-0">
             {/* Connector line (desktop only) */}
             <div className="absolute left-0 right-0 top-5 hidden h-px bg-gray-200 sm:block" style={{ left: "16.6%", right: "16.6%" }} />
@@ -90,8 +90,8 @@ export function HeroSection() {
                 <div className="relative z-10 mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#166534] text-sm font-bold text-white shadow-sm">
                   {step}
                 </div>
-                <h3 className="mb-1.5 text-sm font-semibold text-gray-900">{title}</h3>
-                <p className="text-xs leading-relaxed text-gray-500">{desc}</p>
+                <h3 className="mb-1.5 text-base font-semibold text-gray-900">{title}</h3>
+                <p className="text-sm leading-relaxed text-gray-500">{desc}</p>
               </div>
             ))}
           </div>
