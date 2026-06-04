@@ -97,7 +97,14 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
       {/* Details */}
       <div className="p-4">
         <div className={`mb-1 text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatPrice(property.price)}</div>
-        <div className={`mb-0.5 text-sm font-medium ${isDark ? "text-white/70" : "text-gray-700"}`}>{property.address}</div>
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mb-0.5 block text-sm font-medium underline-offset-2 hover:underline ${isDark ? "text-white/70 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
+        >
+          {property.address}
+        </a>
         <div className={`mb-3 text-xs ${isDark ? "text-white/40" : "text-gray-400"}`}>
           {[property.city, property.state_code, property.postal_code].filter(Boolean).join(", ")}
         </div>
