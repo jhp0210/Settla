@@ -16,7 +16,7 @@ There are no tests.
 
 ## Architecture
 
-**AI Housing** is a Next.js 16 app (App Router) for AI-powered real estate analysis. It has two distinct visual themes: a public landing page (white/green `#166534`) and authenticated pages (dark `#0a0a0f` / indigo).
+**Settla** (formerly "AI Housing") is a Next.js 16 app (App Router) for AI-powered real estate analysis. It has two distinct visual themes: a public landing page (white/green `#166534`) and authenticated pages (dark `#0a0a0f` / indigo).
 
 ### Page routes
 

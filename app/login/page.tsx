@@ -77,7 +77,7 @@ function LoginContent() {
         <div className="mb-8 text-center">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-sm font-medium text-indigo-300">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400" />
-            AI Housing
+            Settla
           </div>
           <h1 className="mt-4 text-3xl font-bold text-white">
             {mode === "signin" ? "Welcome back" : "Create account"}

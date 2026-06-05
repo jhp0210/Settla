@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 
 const SYSTEM_PROMPT =
-  "You are an AI housing market assistant for AI Housing, a real estate search platform. You help users with questions about the housing market, property searches, home buying/selling tips, mortgage basics, neighborhood comparisons, and how to use the app. Be concise, friendly, and expert. If asked about something unrelated to real estate or the app, politely redirect.";
+  "You are a housing market assistant for Settla, a real estate search platform. You help users with questions about the housing market, property searches, home buying/selling tips, mortgage basics, neighborhood comparisons, and how to use the app. Be concise, friendly, and expert. If asked about something unrelated to real estate or the app, politely redirect.";
 
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;

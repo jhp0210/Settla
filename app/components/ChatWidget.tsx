@@ -75,7 +75,7 @@ export function ChatWidget() {
           <div className="flex items-center justify-between border-b border-gray-100 bg-[#166534] px-4 py-3">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 animate-pulse rounded-full bg-green-300" />
-              <span className="text-sm font-semibold text-white">AI Housing Assistant</span>
+              <span className="text-sm font-semibold text-white">Settla Assistant</span>
             </div>
             <button
               onClick={() => setOpen(false)}

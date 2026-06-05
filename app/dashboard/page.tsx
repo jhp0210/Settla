@@ -70,7 +70,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-sm font-medium text-indigo-300">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400" />
-              AI Housing
+              Settla
             </div>
             {/* Plan badge */}
             {isPro ? (
