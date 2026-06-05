@@ -22,18 +22,22 @@ There are no tests.
 
 | Route | Description |
 |---|---|
-| `/` | Landing page with `HeroSection` + `HeroSearch` |
-| `/login` | Google OAuth sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
+| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), a "How it works" strip, and a static side-by-side comparison preview |
+| `/login` | Google OAuth + email/password sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
 | `/dashboard` | Authenticated search + AI analysis + property comparison |
 | `/pricing` | Free vs Pro plan selector |
 | `/auth/callback` | Supabase OAuth code exchange → redirects to `/dashboard` |
+
+> Note: `app/components/HeroSearch.tsx` is legacy and no longer imported — the landing page search is now `PropertyListings` (themed `light`).
 
 ### API routes
 
 - `POST /api/analyze` — calls OpenAI `gpt-4o-mini` with a property address, returns a JSON `AnalysisData` object (neighborhood, priceRange, pros/cons, scores, etc.)
 - `POST /api/chat` — streams an OpenAI `gpt-4o-mini` response as `text/plain` for the floating `ChatWidget`
+- `POST /api/properties` — searches listings via RapidAPI "Realty in US" (`/v3/list`); dedupes results by `property_id` and upgrades photo URLs from small (`s.jpg`) to large (`l.jpg`)
+- `GET /api/property-detail?property_id=X` — fetches `year_built` and `baths_consolidated` from the RapidAPI detail endpoint (`/v3/detail`); used to enrich a property when it's saved
 
-Both routes require `OPENAI_API_KEY` in the environment.
+The OpenAI routes require `OPENAI_API_KEY`; the property routes require `RAPIDAPI_KEY`.
 
 ### Auth & plan state
 
@@ -43,7 +47,7 @@ Both routes require `OPENAI_API_KEY` in the environment.
 
 ### Search carry-over pattern
 
-`HeroSearch` (landing page) stores the search query in `sessionStorage` under `"pending_search"` before pushing to `/login`. After login and redirect to `/dashboard`, `DashboardPage` reads and clears this key in a `useEffect`, then immediately runs the search.
+On the landing page, when an unauthenticated user tries to save a listing, `PropertyListings` stores that property's address in `sessionStorage` under `"pending_search"` before pushing to `/login`. After login and redirect to `/dashboard`, `DashboardPage` reads and clears this key in a `useEffect`, then sets it as the search query and immediately runs the search.
 
 ### Environment variables
 
@@ -51,4 +55,5 @@ Both routes require `OPENAI_API_KEY` in the environment.
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 OPENAI_API_KEY=
+RAPIDAPI_KEY=
 ```
