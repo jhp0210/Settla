@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { label: "How it works", href: "#how-it-works" },
+  { label: "How it works", href: "/#how-it-works" },
   { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 function Logo() {

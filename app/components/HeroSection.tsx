@@ -76,6 +76,9 @@ export function HeroSection() {
             <br />
             <span className="text-[#166534]">Compare and decide.</span>
           </h1>
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-500">
+            Search listings, save the ones you tour, and compare them side by side.
+          </p>
         </div>
 
         <div className="mx-auto max-w-5xl">
@@ -225,7 +228,11 @@ export function HeroSection() {
             </svg>
             <span className="text-sm font-semibold text-gray-700">Settla</span>
           </div>
-          <p className="text-xs text-gray-400">© 2026 Settla. Demo project.</p>
+          <div className="flex items-center gap-6 text-sm text-gray-500">
+            <Link href="/pricing" className="transition-colors hover:text-gray-900">Pricing</Link>
+            <Link href="/faq" className="transition-colors hover:text-gray-900">FAQ</Link>
+          </div>
+          <p className="text-xs text-gray-400">© 2026 Settla.</p>
         </div>
       </footer>
     </div>

@@ -179,10 +179,6 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* Fine print */}
-        <p className="mt-8 text-center text-xs text-white/25">
-          This is a demo — no real payment is processed.
-        </p>
       </div>
     </main>
   );

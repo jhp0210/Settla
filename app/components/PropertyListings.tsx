@@ -193,7 +193,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
         <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>
           Browse Listings
         </h2>
-        <p className={`mt-1 text-xs ${isDark ? "text-white/40" : "text-gray-400"}`}>
+        <p className={`mt-1 text-sm ${isDark ? "text-white/40" : "text-gray-400"}`}>
           Search by ZIP code or city (e.g. &quot;98122&quot; or &quot;Seattle, WA&quot;) — bookmark properties you&apos;ve toured to compare them.
         </p>
       </div>
