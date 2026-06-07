@@ -16,13 +16,13 @@ There are no tests.
 
 ## Architecture
 
-**Settla** (formerly "AI Housing") is a Next.js 16 app (App Router) for AI-powered real estate analysis. It has two distinct visual themes: a public landing page (white/green `#166534`) and authenticated pages (dark `#0a0a0f` / indigo).
+**Settla** (formerly "AI Housing") is a Next.js 16 app (App Router) for AI-powered real estate analysis. The whole app uses one light theme (white/green `#166534`). `PropertyListings` still carries a `theme` prop (`"light"` | `"dark"`); `"light"` is used everywhere now, and the old dark `#0a0a0f` / indigo variants in the shared components are legacy fallbacks.
 
 ### Page routes
 
 | Route | Description |
 |---|---|
-| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), a "How it works" strip, and a static side-by-side comparison preview |
+| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), a "How it works" strip, and `ComparisonDemo` — an auto-playing animated side-by-side walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`) |
 | `/login` | Google OAuth + email/password sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
 | `/dashboard` | Authenticated search + AI analysis + property comparison |
 | `/pricing` | Free vs Pro plan selector |
