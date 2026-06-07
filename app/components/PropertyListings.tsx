@@ -13,10 +13,12 @@ function formatPrice(price: number | null) {
   return "$" + price.toLocaleString();
 }
 
-function BookmarkIcon({ filled }: { filled: boolean }) {
+function BookmarkIcon({ filled, isDark }: { filled: boolean; isDark: boolean }) {
+  const accent = isDark ? "fill-indigo-400 text-indigo-400" : "fill-[#166534] text-[#166534]";
+  const idle = isDark ? "fill-none text-white/60" : "fill-none text-gray-500";
   return (
     <svg
-      className={`h-5 w-5 transition-colors ${filled ? "fill-indigo-400 text-indigo-400" : "fill-none text-white/60"}`}
+      className={`h-5 w-5 transition-colors ${filled ? accent : idle}`}
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeWidth={2}
@@ -94,13 +96,17 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
           onClick={handleToggle}
           disabled={toggling}
           className={`absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border transition-all ${
-            saved
-              ? "border-indigo-500/50 bg-indigo-500/20 hover:bg-indigo-500/30"
-              : "border-white/20 bg-black/40 hover:bg-black/60"
+            isDark
+              ? saved
+                ? "border-indigo-500/50 bg-indigo-500/20 hover:bg-indigo-500/30"
+                : "border-white/20 bg-black/40 hover:bg-black/60"
+              : saved
+                ? "border-green-300 bg-green-100 hover:bg-green-200"
+                : "border-gray-200 bg-white/90 hover:bg-white"
           } disabled:opacity-50`}
           title={saved ? "Remove from saved" : "Save property"}
         >
-          <BookmarkIcon filled={saved} />
+          <BookmarkIcon filled={saved} isDark={isDark} />
         </button>
       </div>
 
@@ -313,7 +319,9 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
 
       {/* Error */}
       {error && (
-        <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-400">
+        <div className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
+          isDark ? "border-red-500/20 bg-red-500/5 text-red-400" : "border-red-200 bg-red-50 text-red-600"
+        }`}>
           {error}
         </div>
       )}
