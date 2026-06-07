@@ -26,6 +26,7 @@ There are no tests.
 | `/login` | Google OAuth + email/password sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
 | `/dashboard` | Authenticated search + AI analysis + property comparison |
 | `/pricing` | Free vs Pro plan selector |
+| `/faq` | Static accordion of FAQs (client component, `Navbar` + hardcoded `FAQS` array) |
 | `/auth/callback` | Supabase OAuth code exchange → redirects to `/dashboard` |
 
 > Note: `app/components/HeroSearch.tsx` is legacy and no longer imported — the landing page search is now `PropertyListings` (themed `light`).
