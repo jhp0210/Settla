@@ -59,11 +59,12 @@ function Notepad({ property }: { property: SavedProperty }) {
 
 export function HouseComparison() {
   const { plan } = usePlan();
-  const { savedProperties } = useSavedProperties();
+  const { savedProperties, unsaveProperty } = useSavedProperties();
   const isPro = plan === "pro";
   const maxSlots = isPro ? 3 : FREE_COMPARE_LIMIT;
 
   const [selected, setSelected] = useState<(SavedProperty | null)[]>([null, null, null]);
+  const [removing, setRemoving] = useState<string | null>(null);
 
   function handleChange(slotIdx: number, propertyId: string) {
     const house = propertyId === "" ? null : savedProperties.find((p) => p.property_id === propertyId) ?? null;
@@ -72,6 +73,14 @@ export function HouseComparison() {
       next[slotIdx] = house;
       return next;
     });
+  }
+
+  async function handleRemove(propertyId: string) {
+    setRemoving(propertyId);
+    // Clear it from any comparison slot it currently occupies.
+    setSelected((prev) => prev.map((p) => (p?.property_id === propertyId ? null : p)));
+    await unsaveProperty(propertyId);
+    setRemoving(null);
   }
 
   const hasProperties = savedProperties.length > 0;
@@ -91,6 +100,36 @@ export function HouseComparison() {
         </div>
       ) : (
         <>
+          {/* Saved homes — manage / delete */}
+          <div className="mb-5 rounded-xl border border-gray-200 bg-white p-4">
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Your saved homes ({savedProperties.length})
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {savedProperties.map((h) => (
+                <span
+                  key={h.property_id}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 py-1 pl-3 pr-1.5 text-xs text-gray-700"
+                >
+                  <span className="max-w-[180px] truncate">
+                    {h.address}{h.city ? `, ${h.city}` : ""}
+                  </span>
+                  <button
+                    onClick={() => handleRemove(h.property_id)}
+                    disabled={removing === h.property_id}
+                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600 disabled:opacity-40"
+                    title="Remove from saved"
+                    aria-label={`Remove ${h.address} from saved`}
+                  >
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+
           {/* Slot selectors */}
           <div className="grid grid-cols-3 gap-4 mb-0">
             {Array.from({ length: maxSlots }).map((_, idx) => (
@@ -135,8 +174,20 @@ export function HouseComparison() {
               return house ? (
                 <div
                   key={house.property_id}
-                  className="flex flex-col rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
+                  className="relative flex flex-col rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
                 >
+                  {/* Remove from saved */}
+                  <button
+                    onClick={() => handleRemove(house.property_id)}
+                    disabled={removing === house.property_id}
+                    className="absolute right-2.5 top-2.5 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-500 shadow-sm backdrop-blur-sm transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+                    title="Remove from saved"
+                    aria-label={`Remove ${house.address} from saved`}
+                  >
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                  </button>
                   {/* Photo */}
                   {house.photo_url && (
                     <div className="relative h-36 shrink-0">
