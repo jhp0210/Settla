@@ -1,63 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Navbar } from "./Navbar";
 import { PropertyListings } from "./PropertyListings";
-
-// Sample homes for the landing-page comparison preview (same metro so the
-// comparison reads like a real decision). Mirrors the dashboard's real feature.
-const COMPARE_HOMES = [
-  {
-    address: "412 E Pine St",
-    city: "Capitol Hill, Seattle",
-    price: 689000,
-    beds: 2,
-    baths: 2,
-    sqft: 1120,
-    year: 2015,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop&auto=format&q=80",
-  },
-  {
-    address: "1808 Bellevue Ave",
-    city: "First Hill, Seattle",
-    price: 625000,
-    beds: 2,
-    baths: 1,
-    sqft: 980,
-    year: 1998,
-    image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop&auto=format&q=80",
-  },
-  {
-    address: "530 Broadway E",
-    city: "Broadway, Seattle",
-    price: 749000,
-    beds: 3,
-    baths: 2,
-    sqft: 1340,
-    year: 2019,
-    image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop&auto=format&q=80",
-  },
-];
-
-type CompareHome = (typeof COMPARE_HOMES)[number];
-
-const COMPARE_ROWS: {
-  label: string;
-  get: (h: CompareHome) => number;
-  fmt: (v: number) => string;
-  best: "min" | "max";
-}[] = [
-  { label: "Sale price", get: (h) => h.price, fmt: (v) => "$" + v.toLocaleString(), best: "min" },
-  { label: "Bedrooms", get: (h) => h.beds, fmt: (v) => String(v), best: "max" },
-  { label: "Bathrooms", get: (h) => h.baths, fmt: (v) => String(v), best: "max" },
-  { label: "Size", get: (h) => h.sqft, fmt: (v) => v.toLocaleString() + " sq ft", best: "max" },
-  { label: "Year built", get: (h) => h.year, fmt: (v) => String(v), best: "max" },
-];
-
-// Which columns hold the "best" value in a row (ties highlight all winners).
-function bestFlags(values: number[], mode: "min" | "max"): boolean[] {
-  const target = mode === "min" ? Math.min(...values) : Math.max(...values);
-  return values.map((v) => v === target);
-}
+import { ComparisonDemo } from "./ComparisonDemo";
 
 export function HeroSection() {
   return (
@@ -131,91 +75,12 @@ export function HeroSection() {
               Side by side
             </span>
             <h2 className="text-3xl font-bold text-gray-900">See the difference at a glance</h2>
+            <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
+              Bookmark the homes you toured and Settla lines them up — watch it work.
+            </p>
           </div>
 
-          <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-            <div className="overflow-x-auto">
-              <div className="min-w-[640px]">
-                {/* Home headers */}
-                <div className="grid grid-cols-[132px_repeat(3,1fr)]">
-                  <div className="bg-gray-50/60" />
-                  {COMPARE_HOMES.map((h) => (
-                    <div key={h.address} className="border-l border-gray-100 p-4">
-                      <div className="relative mb-3 h-24 overflow-hidden rounded-xl ring-1 ring-black/5">
-                        <Image
-                          src={h.image}
-                          alt={h.address}
-                          fill
-                          className="object-cover transition-transform duration-300 hover:scale-105"
-                          sizes="220px"
-                        />
-                      </div>
-                      <div className="text-sm font-semibold leading-tight text-gray-900">{h.address}</div>
-                      <div className="mt-0.5 text-xs text-gray-400">{h.city}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Metric rows */}
-                {COMPARE_ROWS.map((row, ri) => {
-                  const values = COMPARE_HOMES.map(row.get);
-                  const flags = bestFlags(values, row.best);
-                  const isPrice = row.best === "min";
-                  return (
-                    <div
-                      key={row.label}
-                      className={`grid grid-cols-[132px_repeat(3,1fr)] border-t border-gray-100 ${ri % 2 ? "bg-gray-50/30" : ""}`}
-                    >
-                      <div className="flex items-center bg-gray-50/60 px-4 py-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-                        {row.label}
-                      </div>
-                      {values.map((v, i) => (
-                        <div
-                          key={i}
-                          className={`flex items-center justify-between gap-1 border-l border-gray-100 px-4 py-4 ${
-                            flags[i] ? "bg-green-50/70" : ""
-                          }`}
-                        >
-                          <span
-                            className={`${isPrice ? "text-base" : "text-sm"} ${
-                              flags[i] ? "font-bold text-[#166534]" : "font-medium text-gray-700"
-                            }`}
-                          >
-                            {row.fmt(v)}
-                          </span>
-                          {flags[i] && (
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#166534] text-white">
-                              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                              </svg>
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Legend + CTA footer */}
-            <div className="flex flex-col items-center justify-between gap-3 border-t border-gray-100 bg-gray-50/40 px-5 py-4 sm:flex-row">
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#166534] text-white">
-                  <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </span>
-                Best value in each row
-              </div>
-              <Link
-                href="/login"
-                className="inline-flex items-center gap-1.5 rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#14532d]"
-              >
-                Compare your own homes →
-              </Link>
-            </div>
-          </div>
+          <ComparisonDemo />
         </div>
       </section>
 

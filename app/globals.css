@@ -10,3 +10,14 @@ html, body {
   background-color: #F8F7F4;
   color: #111827;
 }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
