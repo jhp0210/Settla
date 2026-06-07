@@ -38,21 +38,24 @@ export function SavedPropertiesProvider({ children }: { children: React.ReactNod
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      setSavedProperties([]);
-      return;
-    }
     const supabase = createClient();
-    setLoading(true);
-    supabase
-      .from("saved_properties")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        setSavedProperties((data as SavedProperty[]) ?? []);
-        setLoading(false);
-      });
+
+    async function load() {
+      if (!user) {
+        setSavedProperties([]);
+        return;
+      }
+      setLoading(true);
+      const { data } = await supabase
+        .from("saved_properties")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      setSavedProperties((data as SavedProperty[]) ?? []);
+      setLoading(false);
+    }
+
+    load();
   }, [user]);
 
   const isSaved = useCallback(

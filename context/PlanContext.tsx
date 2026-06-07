@@ -34,23 +34,26 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
     const supabase = createClient();
     const today = new Date().toISOString().split("T")[0];
 
     async function fetchOrCreateProfile() {
+      if (!user) {
+        setPlan("free");
+        setSearchesToday(0);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
       const { data, error } = await supabase
         .from("profiles")
         .select("plan, searches_today, search_date")
-        .eq("id", user!.id)
+        .eq("id", user.id)
         .single();
 
       if (error || !data) {
-        await supabase.from("profiles").insert({ id: user!.id });
+        await supabase.from("profiles").insert({ id: user.id });
         setPlan("free");
         setSearchesToday(0);
       } else {
