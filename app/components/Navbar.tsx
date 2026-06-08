@@ -25,6 +25,20 @@ function Logo() {
 export function Navbar() {
   const [open, setOpen] = useState(false);
 
+  // App Router skips hash scrolling when the target is on the current page, so
+  // handle same-page anchor links (e.g. "/#how-it-works") manually.
+  function handleNavClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    setOpen(false);
+    if (!href.startsWith("/#")) return;
+    const el = document.getElementById(href.slice(2));
+    if (el) {
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth" });
+      window.history.pushState(null, "", href);
+    }
+    // If the target isn't on this page, let <Link> navigate home normally.
+  }
+
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200/70 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
@@ -36,6 +50,7 @@ export function Navbar() {
             <Link
               key={l.href}
               href={l.href}
+              onClick={(e) => handleNavClick(e, l.href)}
               className="group relative text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
             >
               {l.label}
@@ -77,7 +92,7 @@ export function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                onClick={() => setOpen(false)}
+                onClick={(e) => handleNavClick(e, l.href)}
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
               >
                 {l.label}

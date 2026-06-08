@@ -30,52 +30,15 @@ export function HeroSection() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how-it-works" className="border-y border-gray-200 bg-white px-4 py-10">
-        <div className="mx-auto max-w-3xl">
-          <p className="mb-8 text-center text-sm font-semibold uppercase tracking-widest text-gray-400">How it works</p>
-          <div className="relative flex flex-col gap-8 sm:flex-row sm:gap-0">
-            {/* Connector line (desktop only) */}
-            <div className="absolute left-0 right-0 top-5 hidden h-px bg-gray-200 sm:block" style={{ left: "16.6%", right: "16.6%" }} />
-
-            {[
-              {
-                step: "1",
-                title: "Search with filters",
-                desc: "Enter a city or ZIP code, then narrow by price, bedrooms, and bathrooms to find listings that fit.",
-              },
-              {
-                step: "2",
-                title: "Save homes you like",
-                desc: "Bookmark any listing as you browse. Your saved homes stay in one place across sessions.",
-              },
-              {
-                step: "3",
-                title: "Compare side by side",
-                desc: "Pick up to three saved homes and see price, size, beds, and baths laid out together.",
-              },
-            ].map(({ step, title, desc }) => (
-              <div key={step} className="relative flex flex-1 flex-col items-center text-center">
-                <div className="relative z-10 mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#166534] text-sm font-bold text-white shadow-sm">
-                  {step}
-                </div>
-                <h3 className="mb-1.5 text-base font-semibold text-gray-900">{title}</h3>
-                <p className="text-sm leading-relaxed text-gray-500">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Comparison preview */}
-      <section className="border-t border-gray-200 bg-white px-4 py-20">
-        <div className="mx-auto max-w-5xl">
+      <section id="how-it-works" className="border-t border-gray-200 bg-white px-4 py-20">
+        <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#166534]">
-              Side by side
+              How it works
             </span>
             <h2 className="text-3xl font-bold text-gray-900">See the difference at a glance</h2>
-            <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
+            <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
               Bookmark the homes you toured and Settla lines them up — watch it work.
             </p>
           </div>
