@@ -6,11 +6,25 @@ import { useRouter } from "next/navigation";
 import { useSavedProperties, type SavedProperty } from "@/context/SavedPropertiesContext";
 import { useAuth } from "@/context/AuthContext";
 
-type ListingProperty = Omit<SavedProperty, "id">;
+// Search results carry two rental-only fields that aren't persisted to the
+// saved_properties table; they're stripped before saving (see handleToggle).
+type ListingProperty = Omit<SavedProperty, "id"> & {
+  price_max?: number | null;
+  for_rent?: boolean;
+};
 
-function formatPrice(price: number | null) {
-  if (!price) return "Price N/A";
-  return "$" + price.toLocaleString();
+function priceLabel(property: ListingProperty) {
+  if (property.for_rent) {
+    const min = property.price;
+    const max = property.price_max;
+    if (min && max && max > min) {
+      return `$${min.toLocaleString()}–$${max.toLocaleString()}/mo`;
+    }
+    if (min) return `$${min.toLocaleString()}/mo`;
+    return "Rent N/A";
+  }
+  if (!property.price) return "Price N/A";
+  return "$" + property.price.toLocaleString();
 }
 
 function BookmarkIcon({ filled, isDark }: { filled: boolean; isDark: boolean }) {
@@ -50,7 +64,10 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
     if (saved) {
       await unsaveProperty(property.property_id);
     } else {
+      // Drop rental-only fields so the insert matches the saved_properties columns.
       let enriched = { ...property };
+      delete enriched.price_max;
+      delete enriched.for_rent;
       try {
         const res = await fetch(`/api/property-detail?property_id=${property.property_id}`);
         if (res.ok) {
@@ -112,7 +129,7 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
 
       {/* Details */}
       <div className="p-4">
-        <div className={`mb-1 text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatPrice(property.price)}</div>
+        <div className={`mb-1 text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{priceLabel(property)}</div>
         <a
           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
           target="_blank"
@@ -147,6 +164,8 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
   const [priceMax, setPriceMax] = useState("");
   const [bedsMin, setBedsMin] = useState("");
   const [bathsMin, setBathsMin] = useState("");
+  const [homeType, setHomeType] = useState("");
+  const [status, setStatus] = useState<"for_sale" | "for_rent">("for_sale");
   const [showFilters, setShowFilters] = useState(false);
   const [properties, setProperties] = useState<ListingProperty[]>([]);
   const [searching, setSearching] = useState(false);
@@ -173,6 +192,8 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
           priceMax: priceMax || undefined,
           bedsMin: bedsMin || undefined,
           bathsMin: bathsMin || undefined,
+          homeType: homeType || undefined,
+          status,
         }),
       });
       const data = await res.json();
@@ -206,6 +227,43 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
 
       {/* Search */}
       <form onSubmit={handleSearch} className="space-y-3">
+        {/* For sale / For rent toggle */}
+        <div className={`inline-flex rounded-xl border p-1 ${
+          isDark ? "border-white/10 bg-white/5" : "border-gray-200 bg-gray-100"
+        }`}>
+          {([
+            ["for_sale", "For sale"],
+            ["for_rent", "For rent"],
+          ] as const).map(([value, label]) => {
+            const active = status === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => {
+                  if (value === status) return;
+                  setStatus(value);
+                  // Clear the query and stale results so nothing lingers from the prior mode.
+                  setLocation("");
+                  setProperties([]);
+                  setSearched(false);
+                  setError(null);
+                }}
+                className={`rounded-lg px-4 py-1.5 text-sm font-medium transition ${
+                  active
+                    ? isDark
+                      ? "bg-indigo-600 text-white"
+                      : "bg-white text-[#166534] shadow-sm"
+                    : isDark
+                      ? "text-white/50 hover:text-white"
+                      : "text-gray-500 hover:text-gray-800"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
         <div className="flex gap-3">
           <div className="relative flex-1">
             <svg
@@ -271,9 +329,18 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
 
         {/* Filter panel */}
         {showFilters && (
-          <div className={`grid grid-cols-2 gap-3 rounded-xl border p-4 sm:grid-cols-4 ${
+          <div className={`grid grid-cols-2 gap-3 rounded-xl border p-4 sm:grid-cols-3 lg:grid-cols-5 ${
             isDark ? "border-white/10 bg-white/[0.03]" : "border-gray-200 bg-gray-50"
           }`}>
+            <div>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Home type</label>
+              <select value={homeType} onChange={(e) => setHomeType(e.target.value)} className={selectCls}>
+                <option value="">Any</option>
+                <option value="house">House</option>
+                <option value="apartment">Apartment</option>
+                <option value="condo">Condo</option>
+              </select>
+            </div>
             <div>
               <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min price</label>
               <input

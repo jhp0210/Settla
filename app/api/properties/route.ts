@@ -7,16 +7,17 @@ function upgradePhotoUrl(url: string | null): string | null {
 }
 
 export async function POST(req: NextRequest) {
-  const { location, priceMin, priceMax, bedsMin, bathsMin } = await req.json();
+  const { location, priceMin, priceMax, bedsMin, bathsMin, homeType, status } = await req.json();
   if (!location?.trim()) {
     return NextResponse.json({ error: "Location is required" }, { status: 400 });
   }
 
+  const forRent = status === "for_rent";
   const isZip = /^\d{5}$/.test(location.trim());
   const body: Record<string, unknown> = {
     limit: 20,
     offset: 0,
-    status: ["for_sale"],
+    status: [forRent ? "for_rent" : "for_sale"],
     sort: { direction: "desc", field: "list_date" },
   };
 
@@ -36,6 +37,16 @@ export async function POST(req: NextRequest) {
   }
   if (bedsMin) body.beds = { min: Number(bedsMin) };
   if (bathsMin) body.baths = { min: Number(bathsMin) };
+
+  // Map UI home-type labels to RapidAPI "Realty in US" type codes (verified against /v3/list).
+  const HOME_TYPE_CODES: Record<string, string> = {
+    house: "single_family",
+    apartment: "apartment",
+    condo: "condos",
+  };
+  if (homeType && HOME_TYPE_CODES[homeType]) {
+    body.type = [HOME_TYPE_CODES[homeType]];
+  }
 
   const res = await fetch("https://realty-in-us.p.rapidapi.com/properties/v3/list", {
     method: "POST",
@@ -67,7 +78,10 @@ export async function POST(req: NextRequest) {
       city: (addr.city as string) ?? "",
       state_code: (addr.state_code as string) ?? "",
       postal_code: (addr.postal_code as string) ?? "",
-      price: (p.list_price as number) ?? null,
+      // Rentals leave list_price null and list the rent in list_price_min/max.
+      price: (p.list_price as number) ?? (p.list_price_min as number) ?? null,
+      price_max: forRent ? ((p.list_price_max as number) ?? null) : null,
+      for_rent: forRent,
       beds: (desc.beds as number) ?? null,
       baths: (desc.baths_full_calc as number)?.toString() ?? null,
       sqft: (desc.sqft as number) ?? null,
