@@ -63,13 +63,23 @@ function bestFlags(values: number[], mode: "min" | "max"): boolean[] {
 const GLIDE_MS = 700; // cursor travel time between bookmark buttons
 const PRESS_MS = 160; // click press
 const DWELL_MS = 520; // pause after each bookmark
-const HOLD_MS = 3000; // hold the finished table before looping
+const COMPARE_MS = 1050; // beat to read the filled-in table before highlighting
+const REVEAL_MS = 650; // beat after the best-value cascade
+const HOLD_MS = 2600; // hold the finished table before looping
+
+// The three chapters of the walkthrough, surfaced as a clickable step rail.
+const STEPS = [
+  { title: "Browse & bookmark", hint: "Save the homes you toured" },
+  { title: "Compare side by side", hint: "Every spec lined up" },
+  { title: "See the best value", hint: "Winners highlighted per row" },
+];
 
 export function ComparisonDemo() {
   // How many homes have been "bookmarked" so far (0..3), in order.
   const [addedCount, setAddedCount] = useState(0);
+  // Which chapter (0..2) is currently in focus, drives the rail + dimming.
+  const [activeStep, setActiveStep] = useState(0);
   const [highlight, setHighlight] = useState(false);
-  const [done, setDone] = useState(false);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false, pressing: false });
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,8 +112,8 @@ export function ComparisonDemo() {
     clearTimers();
     measure();
     setAddedCount(0);
+    setActiveStep(0);
     setHighlight(false);
-    setDone(false);
     setCursor((c) => ({ ...c, visible: false, pressing: false }));
 
     const at = (fn: () => void, t: number) => {
@@ -125,11 +135,32 @@ export function ComparisonDemo() {
       acc = start + GLIDE_MS + PRESS_MS + DWELL_MS;
     }
 
-    at(() => setCursor((c) => ({ ...c, visible: false })), acc);
-    at(() => setHighlight(true), acc + 250);
-    at(() => setDone(true), acc + 900);
-    at(() => play(), acc + HOLD_MS);
+    // Step 2 — hide the cursor and shift focus to the comparison table.
+    at(() => {
+      setCursor((c) => ({ ...c, visible: false }));
+      setActiveStep(1);
+    }, acc);
+    // Step 3 — cascade the best-value highlights.
+    at(() => {
+      setActiveStep(2);
+      setHighlight(true);
+    }, acc + COMPARE_MS);
+    at(() => play(), acc + COMPARE_MS + REVEAL_MS + HOLD_MS);
   }, [clearTimers, measure]);
+
+  // Jump straight to a chapter's resting state (used by the rail), then resume
+  // the auto-loop after a short pause so the walkthrough keeps running.
+  const jumpTo = useCallback(
+    (step: number) => {
+      clearTimers();
+      setCursor((c) => ({ ...c, visible: false, pressing: false }));
+      setAddedCount(COMPARE_HOMES.length);
+      setActiveStep(step);
+      setHighlight(step >= 2);
+      timersRef.current.push(window.setTimeout(() => play(), HOLD_MS));
+    },
+    [clearTimers, play],
+  );
 
   useEffect(() => {
     const reduce =
@@ -137,8 +168,8 @@ export function ComparisonDemo() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
       setAddedCount(COMPARE_HOMES.length);
+      setActiveStep(2);
       setHighlight(true);
-      setDone(true);
       return;
     }
     play();
@@ -148,46 +179,80 @@ export function ComparisonDemo() {
   const fmtPrice = (n: number) => "$" + Math.round(n / 1000) + "k";
 
   return (
-    <div
-      ref={containerRef}
-      className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
-    >
-      {/* Demo header bar */}
-      <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gray-50/60 px-5 py-3">
-        <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
-          <span className="relative flex h-2 w-2">
-            <span className={`absolute inline-flex h-full w-full rounded-full bg-[#166534] ${done ? "" : "animate-ping opacity-60"}`} />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#166534]" />
-          </span>
-          {done ? "That's it — three homes, one view" : "Watch: bookmark homes to compare them"}
+    <div ref={containerRef} className="relative">
+      {/* Step rail — clickable chapters that track the walkthrough */}
+      <div className="overflow-x-auto px-1 py-3">
+        <div className="grid min-w-[560px] grid-cols-[120px_repeat(3,1fr)] items-center">
+          {/* spacer above the row-label column */}
+          <div />
+          {STEPS.map((s, i) => {
+            const active = i === activeStep;
+            const complete = i < activeStep;
+            return (
+              <div key={s.title} className="px-4">
+                <button
+                  onClick={() => jumpTo(i)}
+                  aria-current={active ? "step" : undefined}
+                  className="group flex w-full items-center gap-2 py-1 text-left transition-all duration-300"
+                >
+                  <span
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors duration-300 ${
+                      active || complete
+                        ? "bg-[#166534] text-white"
+                        : "bg-gray-200 text-gray-500 group-hover:bg-gray-300"
+                    }`}
+                  >
+                    {complete ? (
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                    ) : (
+                      i + 1
+                    )}
+                  </span>
+                  <span className="min-w-0">
+                    <span
+                      className={`block truncate text-[11px] font-semibold leading-tight transition-colors duration-300 sm:text-xs ${
+                        active ? "text-gray-900" : "text-gray-500"
+                      }`}
+                    >
+                      {s.title}
+                    </span>
+                    <span
+                      className={`hidden truncate text-[10px] leading-tight text-gray-400 transition-opacity duration-300 sm:block ${
+                        active ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      {s.hint}
+                    </span>
+                  </span>
+                </button>
+              </div>
+            );
+          })}
         </div>
-        <button
-          onClick={play}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:border-green-300 hover:text-[#166534]"
-        >
-          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992V4.356M3.999 5.082a8.25 8.25 0 0113.803-3.7L21.015 4.5m0 0v4.992m0-4.992h-4.992M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7" />
-          </svg>
-          Replay
-        </button>
       </div>
 
-      {/* Step 1 — mini listings strip with bookmark targets */}
-      <div className="border-b border-gray-100 px-5 pb-5 pt-4">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-          1 · Browse listings — bookmark the ones you toured
-        </p>
-        <div className="grid grid-cols-3 gap-3">
+      {/* Step 1 — mini listings strip; columns share the comparison table's
+          template so each card sits directly above its column (leading cell
+          spans the row-label column). */}
+      <div
+        className={`overflow-x-auto px-1 pb-5 pt-5 transition-all duration-500 ${
+          activeStep === 0 ? "opacity-100" : "opacity-40"
+        }`}
+      >
+        <div className="grid min-w-[560px] grid-cols-[120px_repeat(3,1fr)]">
+          <div />
           {COMPARE_HOMES.map((h, i) => {
             const added = i < addedCount;
             return (
-              <div
-                key={h.address}
-                className={`relative flex items-center gap-2.5 rounded-xl border p-2 transition-colors duration-300 ${
-                  added ? "border-green-300 bg-green-50/60" : "border-gray-200 bg-white"
-                }`}
-              >
-                <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg ring-1 ring-black/5">
+              <div key={h.address} className="px-4">
+                <div
+                  className={`relative flex items-center gap-2.5 rounded-xl border p-2 transition-colors duration-300 ${
+                    added ? "border-green-300 bg-green-50/60" : "border-gray-200 bg-white"
+                  }`}
+                >
+                  <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg ring-1 ring-black/5">
                   <Image src={h.image} alt={h.address} fill className="object-cover" sizes="44px" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -208,20 +273,20 @@ export function ComparisonDemo() {
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={added ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
                   </svg>
-                </button>
+                  </button>
+                </div>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Step 2 — comparison table that fills in */}
-      <div className="px-5 pb-2 pt-4">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-          2 · Compare them side by side
-        </p>
-      </div>
-      <div className="overflow-x-auto px-1 pb-1">
+      {/* Steps 2 & 3 — comparison table fills in, then best values highlight */}
+      <div
+        className={`overflow-x-auto px-1 pb-1 pt-4 transition-all duration-500 ${
+          activeStep === 0 ? "opacity-40" : "opacity-100"
+        }`}
+      >
         <div className="min-w-[560px]">
           {/* Home headers */}
           <div className="grid grid-cols-[120px_repeat(3,1fr)]">
@@ -229,7 +294,7 @@ export function ComparisonDemo() {
             {COMPARE_HOMES.map((h, i) => {
               const added = i < addedCount;
               return (
-                <div key={h.address} className="border-l border-gray-100 px-4 pb-3">
+                <div key={h.address} className="border-l border-gray-200 px-4 pb-3">
                   {added ? (
                     <div className="animate-[fadeInUp_0.4s_ease]">
                       <div className="relative mb-2 h-16 overflow-hidden rounded-lg ring-1 ring-black/5">
@@ -269,7 +334,7 @@ export function ComparisonDemo() {
                   return (
                     <div
                       key={i}
-                      className="flex items-center justify-between gap-1 border-l border-gray-100 px-4 py-3 transition-colors duration-300"
+                      className="flex items-center justify-between gap-1 border-l border-gray-200 px-4 py-3 transition-colors duration-300"
                       style={{
                         transitionDelay: highlight ? `${ri * 110}ms` : "0ms",
                         backgroundColor: isBest ? "rgba(240, 253, 244, 0.8)" : "transparent",
@@ -306,10 +371,10 @@ export function ComparisonDemo() {
       </div>
 
       {/* Legend + CTA footer */}
-      <div className="flex flex-col items-center justify-between gap-3 border-t border-gray-100 bg-gray-50/40 px-5 py-4 sm:flex-row">
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#166534] text-white">
-            <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+      <div className="flex flex-col items-center justify-between gap-2 px-5 pb-3 pt-1 sm:flex-row">
+        <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
+          <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#166534] text-white">
+            <svg className="h-2 w-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </span>
@@ -317,7 +382,7 @@ export function ComparisonDemo() {
         </div>
         <Link
           href="/login"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#14532d]"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[#166534] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#14532d]"
         >
           Compare your own homes →
         </Link>
