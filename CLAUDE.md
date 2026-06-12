@@ -35,7 +35,7 @@ There are no tests.
 
 ### API routes
 
-- `POST /api/analyze` — calls OpenAI `gpt-4o-mini` with a property address, returns a JSON `AnalysisData` object (neighborhood, priceRange, pros/cons, scores, etc.)
+- `POST /api/analyze` — calls OpenAI `gpt-4o-mini` with a property address, returns a JSON `AnalysisData` object (neighborhood, priceRange, pros/cons, scores, `schools` `{rating, summary}`, `safety` `{level, summary}`, etc.). Runs the OpenAI call and `fetchNearbySchools` (`lib/schools.ts`) in parallel; when SchoolDigger returns results it merges real nearby school **names + star ratings** into `schools.names`. `lib/schools.ts` geocodes the address with the free U.S. Census geocoder (no key) → calls SchoolDigger `/v2.0/schools` near that lat/lng. It fails soft: missing `SCHOOLDIGGER_APP_ID`/`SCHOOLDIGGER_API_KEY`, no geocode match, or no results → returns null and the panel falls back to AI-only school info.
 - `POST /api/chat` — streams an OpenAI `gpt-4o-mini` response as `text/plain` for the floating `ChatWidget`
 - `POST /api/properties` — searches listings via RapidAPI "Realty in US" (`/v3/list`); dedupes results by `property_id` and upgrades photo URLs from small (`s.jpg`) to large (`l.jpg`). Accepts `priceMin`/`priceMax`/`bedsMin`/`bathsMin`, a `homeType` filter (`house`→`single_family`, `apartment`→`apartment`, `condo`→`condos`), and a `status` (`for_sale` default | `for_rent`). For rentals `list_price` is null, so rent is read from `list_price_min`/`list_price_max` and returned as `price` + `price_max` with a `for_rent` flag (cards render `$X/mo` or `$X–$Y/mo`). Note: "apartment" + `for_sale` is genuinely near-empty in the US (apartments are mostly rentals) — that's expected, not a bug.
 - `GET /api/property-detail?property_id=X` — fetches `year_built` and `baths_consolidated` from the RapidAPI detail endpoint (`/v3/detail`); used to enrich a property when it's saved
@@ -59,4 +59,6 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 OPENAI_API_KEY=
 RAPIDAPI_KEY=
+SCHOOLDIGGER_APP_ID=      # optional — enables real nearby school names in /api/analyze
+SCHOOLDIGGER_API_KEY=     # optional — paired with SCHOOLDIGGER_APP_ID
 ```
