@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { fetchNearbySchools } from "@/lib/schools";
+import { createClient } from "@/lib/supabase/server";
 
 const PROMPT = (address: string) => `You are a real estate market analyst. Analyze this property address and return a JSON object.
 
@@ -35,6 +36,28 @@ export async function POST(request: Request) {
     return Response.json({ error: "Address is required" }, { status: 400 });
   }
 
+  // Server-authoritative auth + rate limit. The browser's PlanContext is advisory
+  // only; this is the real gate that protects OpenAI/RapidAPI spend.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return Response.json({ error: "Sign in to analyze an address" }, { status: 401 });
+  }
+
+  const { data: usage, error: usageError } = await supabase.rpc("consume_search");
+  if (usageError) {
+    return Response.json({ error: "Could not verify search quota" }, { status: 500 });
+  }
+  if (!usage?.allowed) {
+    if (usage?.error === "no_profile") {
+      return Response.json({ error: "Profile not found" }, { status: 403 });
+    }
+    return Response.json(
+      { error: "Daily search limit reached — upgrade to Pro for unlimited searches", usage },
+      { status: 429 },
+    );
+  }
+
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const [completion, schoolNames] = await Promise.all([
@@ -48,7 +71,12 @@ export async function POST(request: Request) {
   ]);
 
   const text = completion.choices[0]?.message?.content ?? "{}";
-  const result = JSON.parse(text);
+  let result;
+  try {
+    result = JSON.parse(text);
+  } catch {
+    return Response.json({ error: "Analysis returned an invalid response — please try again" }, { status: 502 });
+  }
 
   // Merge in real nearby schools (names + ratings) when available; the AI keeps
   // providing the rating/summary, and these are layered on top.
@@ -56,5 +84,7 @@ export async function POST(request: Request) {
     result.schools = { ...(result.schools ?? {}), names: schoolNames };
   }
 
+  // Surface the authoritative count so the client meter stays in sync.
+  result.usage = usage;
   return Response.json(result);
 }

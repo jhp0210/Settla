@@ -7,6 +7,10 @@ function upgradePhotoUrl(url: string | null): string | null {
 }
 
 export async function POST(req: NextRequest) {
+  if (!process.env.RAPIDAPI_KEY) {
+    return NextResponse.json({ error: "RAPIDAPI_KEY not configured" }, { status: 500 });
+  }
+
   const { location, priceMin, priceMax, bedsMin, bathsMin, homeType, status } = await req.json();
   if (!location?.trim()) {
     return NextResponse.json({ error: "Location is required" }, { status: 400 });
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-RapidAPI-Key": process.env.RAPIDAPI_KEY!,
+      "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
       "X-RapidAPI-Host": "realty-in-us.p.rapidapi.com",
     },
     body: JSON.stringify(body),

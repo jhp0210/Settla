@@ -11,7 +11,7 @@ import { PropertyListings } from "@/app/components/PropertyListings";
 
 export default function DashboardPage() {
   const { user, signOut } = useAuth();
-  const { plan, searchesToday, canSearch, incrementSearch } = usePlan();
+  const { plan, searchesToday, canSearch, syncUsage, refresh } = usePlan();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -23,7 +23,6 @@ export default function DashboardPage() {
     setIsSearching(true);
     setAnalysis(null);
     setAnalysisError(null);
-    await incrementSearch();
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -31,6 +30,8 @@ export default function DashboardPage() {
         body: JSON.stringify({ address }),
       });
       const data = await res.json();
+      // The server owns the quota; mirror whatever count it reports (success or 429).
+      syncUsage(data.usage);
       if (!res.ok) throw new Error(data.error ?? "Analysis failed");
       setAnalysis(data);
     } catch (err) {
@@ -38,7 +39,7 @@ export default function DashboardPage() {
     } finally {
       setIsSearching(false);
     }
-  }, [canSearch, incrementSearch]);
+  }, [canSearch, syncUsage]);
 
   useEffect(() => {
     const pending = sessionStorage.getItem("pending_search");
@@ -48,6 +49,21 @@ export default function DashboardPage() {
       runSearch(pending);
     }
   }, [runSearch]);
+
+  // Returning from Stripe Checkout: the webhook grants Pro asynchronously, so poll
+  // the profile a few times until the upgrade lands, then clean up the URL.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("upgraded") !== "1") return;
+    let tries = 0;
+    const tick = async () => {
+      await refresh();
+      tries += 1;
+      if (tries < 6) timer = setTimeout(tick, 1500);
+    };
+    let timer = setTimeout(tick, 500);
+    window.history.replaceState(null, "", "/dashboard");
+    return () => clearTimeout(timer);
+  }, [refresh]);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();

@@ -10,6 +10,23 @@ export async function POST(request: Request) {
   }
 
   const { messages } = await request.json();
+
+  // This route is public (the widget runs on the landing page), so bound the input
+  // to limit abuse: shape, conversation length, and per-message size.
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > 30) {
+    return new Response("Invalid request.", { status: 400 });
+  }
+  const valid = messages.every(
+    (m) =>
+      m &&
+      (m.role === "user" || m.role === "assistant") &&
+      typeof m.content === "string" &&
+      m.content.length <= 4000,
+  );
+  if (!valid) {
+    return new Response("Invalid request.", { status: 400 });
+  }
+
   const client = new OpenAI({ apiKey });
 
   const encoder = new TextEncoder();

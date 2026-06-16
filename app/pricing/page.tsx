@@ -32,10 +32,11 @@ function Check() {
 
 export default function PricingPage() {
   const { user } = useAuth();
-  const { plan, upgradeToPro, downgradeToFree } = usePlan();
+  const { plan, downgradeToFree } = usePlan();
   const router = useRouter();
   const [upgrading, setUpgrading] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleUpgrade() {
     if (!user) {
@@ -43,9 +44,17 @@ export default function PricingPage() {
       return;
     }
     setUpgrading(true);
-    await upgradeToPro();
-    setUpgrading(false);
-    router.push("/dashboard");
+    setError(null);
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error ?? "Could not start checkout");
+      // Hand off to Stripe Checkout; the webhook grants Pro on success.
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+      setUpgrading(false);
+    }
   }
 
   async function handleDowngrade() {
@@ -167,13 +176,16 @@ export default function PricingPage() {
                   Current plan
                 </div>
               ) : (
-                <button
-                  onClick={handleUpgrade}
-                  disabled={upgrading}
-                  className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {upgrading ? "Upgrading..." : user ? "Upgrade to Pro" : "Get started with Pro"}
-                </button>
+                <>
+                  <button
+                    onClick={handleUpgrade}
+                    disabled={upgrading}
+                    className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {upgrading ? "Redirecting to checkout..." : user ? "Upgrade to Pro" : "Get started with Pro"}
+                  </button>
+                  {error && <p className="mt-2 text-center text-xs text-red-400">{error}</p>}
+                </>
               )}
             </div>
           </div>
