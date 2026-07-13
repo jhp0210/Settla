@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Settla
 
-## Getting Started
+AI-powered real estate analysis. Search live property listings, get an AI-generated
+neighborhood breakdown (price range, pros/cons, scores, real nearby schools, and safety),
+and compare homes side by side to find the best value.
 
-First, run the development server:
+Built with **Next.js 16** (App Router), **React 19**, **Tailwind CSS 4**, **Supabase**
+(auth + Postgres), **OpenAI**, and **Stripe**.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # start the dev server at http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev      # start dev server at localhost:3000
+npm run build    # production build
+npm run start    # serve the production build
+npm run lint     # ESLint (eslint-config-next)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+There are no tests.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Property search** — live listings via RapidAPI "Realty in US", filterable by price,
+  beds, baths, home type, and for-sale / for-rent status.
+- **AI analysis** — an OpenAI `gpt-4o-mini` breakdown of a property's neighborhood,
+  price range, pros/cons, scores, schools, and safety (labeled an "AI estimate").
+- **Real school data** — nearby public schools with star ratings via the U.S. Census
+  geocoder + SchoolDigger (optional; falls back to AI-only school info).
+- **Side-by-side comparison** — an auto-playing "How it works" walkthrough on the
+  landing page and a comparison view on the dashboard.
+- **Floating chat widget** — a streaming assistant available on every page.
+- **Auth & plans** — Google OAuth + email/password via Supabase. Free plan = 5 searches
+  per day and 2 comparison slots; Pro ($19/mo) via Stripe removes the limits.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Route | Description |
+|---|---|
+| `/` | Landing page: hero search + animated "How it works" walkthrough |
+| `/login` | Google OAuth + email/password sign-in |
+| `/dashboard` | Authenticated search, AI analysis, and property comparison |
+| `/pricing` | Free vs Pro plan selector |
+| `/faq` | FAQ accordion |
+| `/auth/callback` | Supabase OAuth code exchange |
 
-## Deploy on Vercel
+## Plan & quota enforcement
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Quota and plan state are **server-authoritative**. The `profiles.plan`, `searches_today`,
+and `search_date` columns are locked against direct client writes; all mutations go through
+`SECURITY DEFINER` RPCs (`consume_search()` enforces the free daily limit, `set_plan()` is
+downgrade-only). Pro is granted **exclusively** by the Stripe webhook via the service-role
+admin client — the browser can never self-promote.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment variables
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+OPENAI_API_KEY=
+RAPIDAPI_KEY=
+SCHOOLDIGGER_APP_ID=        # optional — enables real nearby school names in /api/analyze
+SCHOOLDIGGER_API_KEY=       # optional — paired with SCHOOLDIGGER_APP_ID
+SUPABASE_SERVICE_ROLE_KEY=  # server-only; used by the Stripe webhook. Never expose to the client
+STRIPE_SECRET_KEY=          # Stripe secret key (test key works end to end)
+STRIPE_WEBHOOK_SECRET=      # signing secret for /api/stripe/webhook
+```
+
+`OPENAI_API_KEY` powers the analysis and chat routes; `RAPIDAPI_KEY` powers property
+search. The SchoolDigger keys are optional — without them `/api/analyze` simply omits
+real school names.
+
+## Deploy
+
+Deploy on [Vercel](https://vercel.com/new). Set the environment variables above in the
+project settings, and point your Stripe webhook at `/api/stripe/webhook`.
