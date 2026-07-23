@@ -22,8 +22,8 @@ There are no tests.
 
 | Route | Description |
 |---|---|
-| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), and an **"About" teaser** — a short pitch that links to `/about` via a "See how it works" button (the animated demo itself lives on `/about`, not the landing page). |
-| `/about` | Dedicated page (FAQ-style shell: `Navbar` + header + CTA) hosting `ComparisonDemo`, an auto-playing animated walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`). It's fronted by a **clickable 3-step rail** (Browse & bookmark → Compare side by side → See the best value): the rail's `activeStep` advances with the animation, the matching panel takes focus while the other dims, and clicking a step calls `jumpTo` to snap to that chapter's resting state (stops the auto-loop; Replay restarts it). |
+| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a hero (headline + two CTAs — "Get started free" → `/login` and "See how it works" → `/demo` — + embedded `PropertyListings` search), a **"Why Settla" features section** (3 icon cards: Search / Save / Compare, with a "See it in action" → `/demo` link), and a footer. The animated demo itself lives on `/demo`, not the landing page. |
+| `/demo` | Dedicated page (FAQ-style shell: `Navbar` + header + CTA) hosting `ComparisonDemo`, an auto-playing animated walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`). It's fronted by a **clickable 3-step rail** (Browse & bookmark → Compare side by side → See the best value): the rail's `activeStep` advances with the animation, the matching panel takes focus while the other dims, and clicking a step calls `jumpTo` to snap to that chapter's resting state (stops the auto-loop; Replay restarts it). |
 | `/login` | Google OAuth + email/password sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
 | `/dashboard` | Authenticated search + AI analysis + property comparison |
 | `/pricing` | Free vs Pro plan selector |
@@ -32,7 +32,7 @@ There are no tests.
 
 > Note: `app/components/HeroSearch.tsx` is legacy and no longer imported — the landing page search is now `PropertyListings` (themed `light`).
 
-> Navbar links: "About" (`/about`), "Pricing" (`/pricing`), and "FAQ" (`/faq`) are all plain routes now. `Navbar` still keeps a same-page `/#…` anchor interception helper (`scrollIntoView` + `scroll-padding-top` in `globals.css`) for any future in-page hash links, but no nav link currently uses it.
+> Navbar links: "Demo" (`/demo`), "Pricing" (`/pricing`), and "FAQ" (`/faq`) are all plain routes now. `Navbar` still keeps a same-page `/#…` anchor interception helper (`scrollIntoView` + `scroll-padding-top` in `globals.css`) for any future in-page hash links, but no nav link currently uses it.
 
 ### API routes
 

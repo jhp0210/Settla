@@ -85,7 +85,7 @@ export default function FaqPage() {
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
               Frequently asked questions
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-500">
+            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-600">
               Everything you need to know about searching, saving, and comparing homes with Settla.
             </p>
           </div>

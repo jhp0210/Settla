@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { label: "About", href: "/about" },
+  { label: "Demo", href: "/demo" },
   { label: "Pricing", href: "/pricing" },
   { label: "FAQ", href: "/faq" },
 ];
@@ -26,7 +26,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
 
   // App Router skips hash scrolling when the target is on the current page, so
-  // handle same-page anchor links (e.g. "/#about") manually.
+  // handle same-page anchor links (e.g. "/#section-id") manually.
   function handleNavClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
     setOpen(false);
     if (!href.startsWith("/#")) return;

@@ -147,10 +147,10 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
         >
           {property.address}
         </a>
-        <div className={`mb-3 text-xs ${isDark ? "text-white/40" : "text-gray-400"}`}>
+        <div className={`mb-3 text-xs ${isDark ? "text-white/40" : "text-gray-500"}`}>
           {[property.city, property.state_code, property.postal_code].filter(Boolean).join(", ")}
         </div>
-        <div className={`flex flex-wrap gap-3 border-t pt-3 text-xs ${isDark ? "border-white/5 text-white/50" : "border-gray-100 text-gray-500"}`}>
+        <div className={`flex flex-wrap gap-3 border-t pt-3 text-xs ${isDark ? "border-white/5 text-white/50" : "border-gray-100 text-gray-600"}`}>
           {property.beds != null && <span>{property.beds} bed</span>}
           {property.baths != null && <span>{property.baths} bath</span>}
           {property.sqft != null && <span>{property.sqft.toLocaleString()} sq ft</span>}
@@ -229,7 +229,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
         <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>
           Browse Listings
         </h2>
-        <p className={`mt-1 text-sm ${isDark ? "text-white/40" : "text-gray-400"}`}>
+        <p className={`mt-1 text-sm ${isDark ? "text-white/40" : "text-gray-600"}`}>
           Search by ZIP code or city (e.g. &quot;98122&quot; or &quot;Seattle, WA&quot;) — bookmark properties you&apos;ve toured to compare them.
         </p>
       </div>
@@ -265,7 +265,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
                       : "bg-white text-[#166534] shadow-sm"
                     : isDark
                       ? "text-white/50 hover:text-white"
-                      : "text-gray-500 hover:text-gray-800"
+                      : "text-gray-600 hover:text-gray-800"
                 }`}
               >
                 {label}
@@ -307,7 +307,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
                   : "border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:text-white"
                 : showFilters
                   ? "border-[#166534]/50 bg-[#166534]/10 text-[#166534]"
-                  : "border-gray-200 bg-white text-gray-500 hover:text-gray-700"
+                  : "border-gray-200 bg-white text-gray-600 hover:text-gray-700"
             }`}
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -342,7 +342,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
             isDark ? "border-white/10 bg-white/[0.03]" : "border-gray-200 bg-gray-50"
           }`}>
             <div>
-              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Home type</label>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-600"}`}>Home type</label>
               <select value={homeType} onChange={(e) => setHomeType(e.target.value)} className={selectCls}>
                 <option value="">Any</option>
                 <option value="house">House</option>
@@ -351,7 +351,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
               </select>
             </div>
             <div>
-              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min price</label>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-600"}`}>Min price</label>
               <input
                 type="number"
                 value={priceMin}
@@ -361,7 +361,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
               />
             </div>
             <div>
-              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Max price</label>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-600"}`}>Max price</label>
               <input
                 type="number"
                 value={priceMax}
@@ -371,7 +371,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
               />
             </div>
             <div>
-              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min beds</label>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-600"}`}>Min beds</label>
               <select value={bedsMin} onChange={(e) => setBedsMin(e.target.value)} className={selectCls}>
                 <option value="">Any</option>
                 <option value="1">1+</option>
@@ -381,7 +381,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
               </select>
             </div>
             <div>
-              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>Min baths</label>
+              <label className={`mb-1 block text-xs font-medium ${isDark ? "text-white/40" : "text-gray-600"}`}>Min baths</label>
               <select value={bathsMin} onChange={(e) => setBathsMin(e.target.value)} className={selectCls}>
                 <option value="">Any</option>
                 <option value="1">1+</option>
@@ -430,7 +430,7 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
 
       {/* Empty state */}
       {!searching && searched && properties.length === 0 && !error && (
-        <div className={`mt-6 rounded-2xl border py-12 text-center text-sm ${isDark ? "border-white/10 bg-white/5 text-white/30" : "border-gray-200 bg-gray-50 text-gray-400"}`}>
+        <div className={`mt-6 rounded-2xl border py-12 text-center text-sm ${isDark ? "border-white/10 bg-white/5 text-white/30" : "border-gray-200 bg-gray-50 text-gray-500"}`}>
           No active listings found for that location. Try a different ZIP code or city.
         </div>
       )}

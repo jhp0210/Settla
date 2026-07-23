@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Navbar } from "../components/Navbar";
 import { ComparisonDemo } from "../components/ComparisonDemo";
 
-export default function AboutPage() {
+export default function DemoPage() {
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
       <Navbar />
@@ -16,12 +16,12 @@ export default function AboutPage() {
           {/* Header */}
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#166534]/20 bg-[#166534]/5 px-4 py-1.5 text-sm font-medium text-[#166534]">
-              About
+              Demo
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
               See the difference at a glance
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-500">
+            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-600">
               Settla lines up the homes you&apos;ve toured side by side — price, size, beds, baths, and year built — and highlights the best value in every row.
             </p>
           </div>
