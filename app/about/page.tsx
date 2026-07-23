@@ -22,7 +22,7 @@ export default function AboutPage() {
               See the difference at a glance
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-500">
-              Settla lines up the homes you&apos;ve toured side by side — price, size, beds, baths, and year built — and highlights the best value in every row. Here&apos;s how it works.
+              Settla lines up the homes you&apos;ve toured side by side — price, size, beds, baths, and year built — and highlights the best value in every row.
             </p>
           </div>
 
