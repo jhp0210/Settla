@@ -14,4 +14,5 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-export const PRO_PRICE_CENTS = 1900; // $19/mo, matches the /pricing page
+export const PRO_PRICE_CENTS = 1000; // $10/mo, matches the /pricing page
+export const PRO_TRIAL_DAYS = 7; // free trial before the first charge

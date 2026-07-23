@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getStripe, PRO_PRICE_CENTS } from "@/lib/stripe";
+import { getStripe, PRO_PRICE_CENTS, PRO_TRIAL_DAYS } from "@/lib/stripe";
 
 export async function POST(request: Request) {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -32,6 +32,10 @@ export async function POST(request: Request) {
           },
         },
       ],
+      // Free trial: the subscription starts "trialing" (Pro active immediately via the
+      // webhook), and Stripe auto-charges $10/mo when the trial ends. A card is collected
+      // upfront (Checkout subscription mode default) so conversion is automatic.
+      subscription_data: { trial_period_days: PRO_TRIAL_DAYS },
       success_url: `${origin}/dashboard?upgraded=1`,
       cancel_url: `${origin}/pricing`,
       metadata: { user_id: user.id },

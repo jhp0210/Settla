@@ -37,7 +37,7 @@ There are no tests.
   landing page and a comparison view on the dashboard.
 - **Floating chat widget** — a streaming assistant available on every page.
 - **Auth & plans** — Google OAuth + email/password via Supabase. Free plan = 5 searches
-  per day and 2 comparison slots; Pro ($19/mo) via Stripe removes the limits.
+  per day and 2 comparison slots; Pro ($10/mo) via Stripe removes the limits.
 
 ## Routes
 

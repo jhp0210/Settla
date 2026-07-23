@@ -156,9 +156,10 @@ export default function PricingPage() {
             <div className="mb-6">
               <h2 className="mb-1 text-xl font-bold text-white">Pro</h2>
               <div className="flex items-end gap-1">
-                <span className="text-4xl font-bold text-white">$19</span>
+                <span className="text-4xl font-bold text-white">$10</span>
                 <span className="mb-1 text-white/40">/ month</span>
               </div>
+              <p className="mt-1 text-sm font-medium text-indigo-300">7-day free trial</p>
             </div>
 
             <ul className="mb-8 flex flex-col gap-3">
@@ -182,8 +183,11 @@ export default function PricingPage() {
                     disabled={upgrading}
                     className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    {upgrading ? "Redirecting to checkout..." : user ? "Upgrade to Pro" : "Get started with Pro"}
+                    {upgrading ? "Redirecting to checkout..." : "Start your 7-day free trial"}
                   </button>
+                  <p className="mt-2 text-center text-xs text-white/40">
+                    Free for 7 days, then $10/mo. Cancel anytime.
+                  </p>
                   {error && <p className="mt-2 text-center text-xs text-red-400">{error}</p>}
                 </>
               )}
