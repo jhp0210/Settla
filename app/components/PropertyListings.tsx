@@ -129,7 +129,16 @@ function PropertyCard({ property, theme = "dark" }: { property: ListingProperty;
 
       {/* Details */}
       <div className="p-4">
-        <div className={`mb-1 text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{priceLabel(property)}</div>
+        <div className="mb-1 flex items-center gap-2">
+          <span className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{priceLabel(property)}</span>
+          <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+            isDark
+              ? "border border-white/15 bg-white/10 text-white/70"
+              : "border border-green-200 bg-green-50 text-[#166534]"
+          }`}>
+            {property.for_rent ? "Rent" : "Buy"}
+          </span>
+        </div>
         <a
           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
           target="_blank"
