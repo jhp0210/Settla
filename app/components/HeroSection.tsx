@@ -31,7 +31,7 @@ export function HeroSection() {
       </section>
 
       {/* Comparison preview */}
-      <section id="how-it-works" className="border-t border-gray-200 bg-white px-4 py-20">
+      <section id="about" className="border-t border-gray-200 bg-white px-4 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#166534]">

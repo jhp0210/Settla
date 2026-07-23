@@ -12,7 +12,7 @@ html, body {
 }
 
 html {
-  /* Offset anchor jumps (e.g. #how-it-works) so the sticky navbar doesn't cover the target. */
+  /* Offset anchor jumps (e.g. #about) so the sticky navbar doesn't cover the target. */
   scroll-padding-top: 5rem;
   scroll-behavior: smooth;
 }

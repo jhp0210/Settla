@@ -22,7 +22,7 @@ There are no tests.
 
 | Route | Description |
 |---|---|
-| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), and the **"How it works" section** (`id="how-it-works"`) — this is `ComparisonDemo`, an auto-playing animated walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`). It's fronted by a **clickable 3-step rail** (Browse & bookmark → Compare side by side → See the best value): the rail's `activeStep` advances with the animation, the matching panel takes focus while the other dims, and clicking a step calls `jumpTo` to snap to that chapter's resting state (stops the auto-loop; Replay restarts it). The demo *is* the "How it works" section. |
+| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), and the **"About" section** (`id="about"`, labeled "How it works" in-panel) — this is `ComparisonDemo`, an auto-playing animated walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`). It's fronted by a **clickable 3-step rail** (Browse & bookmark → Compare side by side → See the best value): the rail's `activeStep` advances with the animation, the matching panel takes focus while the other dims, and clicking a step calls `jumpTo` to snap to that chapter's resting state (stops the auto-loop; Replay restarts it). The demo *is* the "How it works" section. |
 | `/login` | Google OAuth + email/password sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
 | `/dashboard` | Authenticated search + AI analysis + property comparison |
 | `/pricing` | Free vs Pro plan selector |
@@ -31,7 +31,7 @@ There are no tests.
 
 > Note: `app/components/HeroSearch.tsx` is legacy and no longer imported — the landing page search is now `PropertyListings` (themed `light`).
 
-> Navbar anchor: the "How it works" link is `/#how-it-works`. Because the App Router skips hash scrolling to a target on the current page, `Navbar` intercepts same-page `/#…` links and calls `scrollIntoView` manually; `globals.css` sets `scroll-padding-top` so the sticky navbar doesn't cover the target.
+> Navbar anchor: the "About" link is `/#about`. Because the App Router skips hash scrolling to a target on the current page, `Navbar` intercepts same-page `/#…` links and calls `scrollIntoView` manually; `globals.css` sets `scroll-padding-top` so the sticky navbar doesn't cover the target.
 
 ### API routes
 
