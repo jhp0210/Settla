@@ -22,7 +22,8 @@ There are no tests.
 
 | Route | Description |
 |---|---|
-| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), and the **"About" section** (`id="about"`) — this is `ComparisonDemo`, an auto-playing animated walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`). It's fronted by a **clickable 3-step rail** (Browse & bookmark → Compare side by side → See the best value): the rail's `activeStep` advances with the animation, the matching panel takes focus while the other dims, and clicking a step calls `jumpTo` to snap to that chapter's resting state (stops the auto-loop; Replay restarts it). The demo *is* the "About" section. |
+| `/` | Landing page: `HeroSection`, which renders the sticky `Navbar`, a minimal hero (headline + embedded `PropertyListings` search), and an **"About" teaser** — a short pitch that links to `/about` via a "See how it works" button (the animated demo itself lives on `/about`, not the landing page). |
+| `/about` | Dedicated page (FAQ-style shell: `Navbar` + header + CTA) hosting `ComparisonDemo`, an auto-playing animated walkthrough (cursor bookmarks 3 homes → table fills → best-value highlights cascade; loops, Replay button, respects `prefers-reduced-motion`). It's fronted by a **clickable 3-step rail** (Browse & bookmark → Compare side by side → See the best value): the rail's `activeStep` advances with the animation, the matching panel takes focus while the other dims, and clicking a step calls `jumpTo` to snap to that chapter's resting state (stops the auto-loop; Replay restarts it). |
 | `/login` | Google OAuth + email/password sign-in (wrapped in `<Suspense>` to avoid prerender errors from `useSearchParams`) |
 | `/dashboard` | Authenticated search + AI analysis + property comparison |
 | `/pricing` | Free vs Pro plan selector |
@@ -31,7 +32,7 @@ There are no tests.
 
 > Note: `app/components/HeroSearch.tsx` is legacy and no longer imported — the landing page search is now `PropertyListings` (themed `light`).
 
-> Navbar anchor: the "About" link is `/#about`. Because the App Router skips hash scrolling to a target on the current page, `Navbar` intercepts same-page `/#…` links and calls `scrollIntoView` manually; `globals.css` sets `scroll-padding-top` so the sticky navbar doesn't cover the target.
+> Navbar links: "About" (`/about`), "Pricing" (`/pricing`), and "FAQ" (`/faq`) are all plain routes now. `Navbar` still keeps a same-page `/#…` anchor interception helper (`scrollIntoView` + `scroll-padding-top` in `globals.css`) for any future in-page hash links, but no nav link currently uses it.
 
 ### API routes
 

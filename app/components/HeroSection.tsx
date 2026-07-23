@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Navbar } from "./Navbar";
 import { PropertyListings } from "./PropertyListings";
-import { ComparisonDemo } from "./ComparisonDemo";
 
 export function HeroSection() {
   return (
@@ -30,20 +29,25 @@ export function HeroSection() {
         </div>
       </section>
 
-      {/* Comparison preview */}
-      <section id="about" className="border-t border-gray-200 bg-white px-4 py-20">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 text-center">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#166534]">
-              About
-            </span>
-            <h2 className="text-3xl font-bold text-gray-900">See the difference at a glance</h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
-              Bookmark the homes you toured and Settla lines them up — watch it work.
-            </p>
-          </div>
-
-          <ComparisonDemo />
+      {/* How it works teaser → /about */}
+      <section className="border-t border-gray-200 bg-white px-4 py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#166534]">
+            About
+          </span>
+          <h2 className="text-3xl font-bold text-gray-900">See the difference at a glance</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
+            Bookmark the homes you toured and Settla lines them up side by side — price, size, beds, baths, and the best value in every row.
+          </p>
+          <Link
+            href="/about"
+            className="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-[#166534] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#14532d]"
+          >
+            See how it works
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </Link>
         </div>
       </section>
 
