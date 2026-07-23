@@ -227,13 +227,13 @@ export function PropertyListings({ theme = "dark" }: PropertyListingsProps) {
 
       {/* Search */}
       <form onSubmit={handleSearch} className="space-y-3">
-        {/* For sale / For rent toggle */}
+        {/* Buy / Rent toggle */}
         <div className={`inline-flex rounded-xl border p-1 ${
           isDark ? "border-white/10 bg-white/5" : "border-gray-200 bg-gray-100"
         }`}>
           {([
-            ["for_sale", "For sale"],
-            ["for_rent", "For rent"],
+            ["for_sale", "Buy"],
+            ["for_rent", "Rent"],
           ] as const).map(([value, label]) => {
             const active = status === value;
             return (
