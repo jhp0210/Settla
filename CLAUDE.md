@@ -14,6 +14,15 @@ npm run lint     # ESLint (eslint-config-next)
 
 There are no tests.
 
+## Local development
+
+To start working locally: `git pull`, then `npm run dev`, then open http://localhost:3000.
+
+- **Env is already set up.** `.env.local` exists (pulled from the linked Vercel project `aihousing` via `vercel env pull`) and is gitignored. It holds the `NEXT_PUBLIC_SUPABASE_*` keys, `OPENAI_API_KEY`, and the SchoolDigger keys — enough for auth, the landing/dashboard UI, and AI analysis to run locally. If `.env.local` ever goes missing (Supabase client throws *"Your project's URL and API key are required"*), re-pull it: `npx vercel env pull .env.local`.
+- **Production-only keys are NOT in local `.env.local`.** `vercel env pull` grabs the *development* environment, which omits `RAPIDAPI_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `SUPABASE_SERVICE_ROLE_KEY`. So **property search and Stripe checkout won't work locally** with the default pull. To test those, pull the production env instead: `npx vercel env pull .env.local --environment=production`.
+- **Deploys are automatic.** Every push to `main` triggers a Vercel deploy (settla-pink.vercel.app) — there's no manual deploy step.
+- **Port 3000 in use?** It's usually a stale `node.exe` from a previous `next dev`. Kill it with `taskkill /IM node.exe /F` (Windows), or just use the alternate port Next offers.
+
 ## Architecture
 
 **Settla** (formerly "AI Housing") is a Next.js 16 app (App Router) for AI-powered real estate analysis. The whole app uses one light theme (white/green `#166534`). `PropertyListings` still carries a `theme` prop (`"light"` | `"dark"`); `"light"` is used everywhere now, and the old dark `#0a0a0f` / indigo variants in the shared components are legacy fallbacks.
