@@ -35,7 +35,7 @@ export function HeroSection() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#166534]">
-              How it works
+              About
             </span>
             <h2 className="text-3xl font-bold text-gray-900">See the difference at a glance</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
